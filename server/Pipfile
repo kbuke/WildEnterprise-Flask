@@ -9,11 +9,12 @@ flask-migrate = "*"
 flask-cors = "*"
 flask-restful = "*"
 flask-sqlalchemy = "*"
-flask-bcrypt = "*"
-sqlalchemy = "*"
 python-dotenv = "*"
 flask-login = "*"
 flask-mail = "*"
+sqlalchemy-serializer = "*"
+sqlalchemy = "*"
+flask-bcrypt = "*"
 
 [dev-packages]
 

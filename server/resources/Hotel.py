@@ -5,7 +5,7 @@ from models.HotelModels.HotelModel import HotelModel
 from decorators.require_hotel_login import require_hotel_login
 from decorators.require_admin_login import require_admin_login
 
-from functions.check_hotel_id import check_hotel_id
+from functions.check_hotel_id_session import check_hotel_id_session
 
 from flask import request
 
@@ -49,23 +49,23 @@ class SpecificHotel(BaseResource):
 
     @require_hotel_login
     def patch(self, id):
-        check_hotel_id(id)
+        check_hotel_id_session(id)
         return self.patch_instance(id)
 
     @require_admin_login
     def delete(self, id):
-        check_hotel_id(id)
+        check_hotel_id_session(id)
         return self.delete_instance(id)
 
 class HotelChageCredentials(Resource):
     @require_hotel_login
     def patch(self, id):
-        check_hotel_id(id)
+        check_hotel_id_session(id)
 
         hotel = HotelModel.query.get(id)
         data = request.get_json()
 
-        if not hotel.authenticate(data.get("current_password", "")):
+        if not hotel.authenticate(data.get("currentPassword", "")):
             return {"error": "Current password is not correct"}, 401 
 
         try:

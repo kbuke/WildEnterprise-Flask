@@ -21,6 +21,7 @@ class HotelModel(db.Model, SerializerMixin):
 
     serialize_rules = (
         "-_password_hash",
+        "-rooms.hotel",
     )
 
     @validates("slug")

@@ -3,7 +3,7 @@ from functions.validate_dates import make_date_range_validators
 from functions.serialize_relations import serialize_relations
 from config import db 
 from sqlalchemy_serializer import SerializerMixin
-from relational_functions.one_to_many import one_to_many_rltshp, one_to_many_fk
+from relational_functions.one_to_many import one_to_many_rltshp, one_to_many_fk, one_to_many_back_populates
 
 class DiscountModel(db.Model, SerializerMixin):
     __tablename__ = "discounts"
@@ -19,10 +19,10 @@ class DiscountModel(db.Model, SerializerMixin):
     stay_end_date = db.Column(db.Date, nullable=True)
 
     hotel_id = one_to_many_fk("hotels", False)
-    hotel = one_to_many_rltshp("HotelModel", "discounts")
+    hotel = one_to_many_back_populates("HotelModel", "discounts", False)
 
     room_id = one_to_many_fk("rooms", True)
-    room = one_to_many_rltshp("RoomModel", "discounts")
+    room = one_to_many_back_populates("RoomModel", "discounts", delete_orphan=False)
 
     validate_booking_start_date, validate_booking_end_date = make_date_range_validators(
         "booking_start_date", "booking_end_date"

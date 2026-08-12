@@ -24,12 +24,14 @@ class RoomRateModel(db.Model, SerializerMixin):
     end_date = db.Column(db.Date, nullable = False)
     modifier_type = db.Column(db.String, nullable = False)
     value = db.Column(db.Float, nullable = False) # 0.2 means 20% off, 1.1 means 10% increase
+    priority = db.Column(db.Integer, nullable = False, default = 0)
 
     room_id = one_to_many_fk("rooms")
-    room = one_to_many_rltshp("RoomModel", "rates")
+    # room = one_to_many_rltshp("RoomModel", "rates")
+    room = db.relationship("RoomModel", back_populates = "room_rates")
 
     serialize_rules = (
-        serialize_relations("room", ["rates", "hotel", "discounts", "lead_times"])
+        serialize_relations("room", ["rates", "hotel", "discounts", "lead_times", "room_bookings", "room_rates"])
     )
 
     validate_start_date, validate_end_date = make_date_range_validators(

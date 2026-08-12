@@ -9,6 +9,8 @@ from functions.validate_slug import validate_slug
 from functions.validate_email import validate_email
 from functions.serialize_relations import serialize_relations
 
+from relational_functions.one_to_many import one_to_many_back_populates
+
 class HotelModel(db.Model, SerializerMixin):
     __tablename__ = "hotels"
 
@@ -21,11 +23,9 @@ class HotelModel(db.Model, SerializerMixin):
     email = db.Column(db.String, nullable = False, unique = True)
     _password_hash = db.Column("password_hash", db.String, nullable = False)
 
-    rooms = db.relationship(
-        "RoomModel",
-        back_populates = "hotel",
-        cascade = "all, delete-orphan"
-    )
+    rooms = one_to_many_back_populates("RoomModel", "hotel")
+    discounts = one_to_many_back_populates("DiscountModel", "hotel")
+    lead_times = one_to_many_back_populates("LeadTimeRuleModel", "hotel")
 
     serialize_rules = (
         serialize_relations("_password_hash") +

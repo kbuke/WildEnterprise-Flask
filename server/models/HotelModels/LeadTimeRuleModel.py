@@ -2,7 +2,7 @@ from config import db
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 
-from relational_functions.one_to_many import one_to_many_fk, one_to_many_rltshp
+from relational_functions.one_to_many import one_to_many_fk, one_to_many_rltshp, one_to_many_back_populates
 
 from functions.serialize_relations import serialize_relations
 
@@ -21,10 +21,14 @@ class LeadTimeRuleModel(db.Model, SerializerMixin):
     label = db.Column(db.String, nullable = False)
 
     hotel_id = one_to_many_fk("hotels", False)
-    hotel = one_to_many_rltshp("HotelModel", "lead_times")
+
+    # hotel = db.relationship("HotelModel", back_populates="lead_times")
+    hotel = one_to_many_back_populates("HotelModel", "lead_times", False)
+
 
     room_id = one_to_many_fk("rooms", True)
-    room = one_to_many_rltshp("RoomModel", "lead_times")
+    # room = one_to_many_rltshp("RoomModel", "lead_times")
+    room = one_to_many_back_populates("RoomModel", "lead_times", False)
 
     serialize_rules = (
         serialize_relations("hotel", ["lead_times", "rooms", "discounts"]) + 

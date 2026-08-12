@@ -25,6 +25,7 @@ app.config["MAIL_PORT"] = 587
 app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USERNAME"] = os.environ.get("GMAIL_ADDRESS")
 app.config["MAIL_PASSWORD"] = os.environ.get("GMAIL_APP_PASSWORD")
+app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("GMAIL_ADDRESS")
 mail = Mail(app)
 
 metadata = MetaData(naming_convention={

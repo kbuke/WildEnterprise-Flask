@@ -6,7 +6,7 @@ from sqlalchemy_serializer import SerializerMixin
 from functions.str_to_int import str_to_number
 from functions.serialize_relations import serialize_relations
 
-from relational_functions.one_to_many import one_to_many_rltshp, one_to_many_fk
+from relational_functions.one_to_many import one_to_many_fk, one_to_many_back_populates
 
 class RoomModel(db.Model, SerializerMixin):
     """
@@ -24,8 +24,13 @@ class RoomModel(db.Model, SerializerMixin):
     base_price = db.Column(db.Float, nullable = False)
 
     hotel_id = one_to_many_fk("hotels")
-    hotel = db.relationship("HotelModel", back_populates = "rooms")
-    # hotel = one_to_many_rltshp("HotelModel", "rooms")
+    hotel = one_to_many_back_populates("HotelModel", "rooms", False)
+
+    room_bookings = one_to_many_back_populates("RoomBookingModel", "room", False)
+
+    room_rates = one_to_many_back_populates("RoomRateModel", "room")
+    lead_times = one_to_many_back_populates("LeadTimeRuleModel", "room")
+    discounts = one_to_many_back_populates("DiscountModel", "room", delete_orphan=False)
 
     @validates("no_of_rooms")
     def validate_room_numbers(self, key, value):
@@ -42,5 +47,6 @@ class RoomModel(db.Model, SerializerMixin):
     serialize_rules = (
         serialize_relations("hotel", ["rooms"]) +
         serialize_relations("discounts", ["room", "hotel"]) +
-        serialize_relations("lead_times", ["hotel", "room"])
+        serialize_relations("lead_times", ["hotel", "room"]) + 
+        serialize_relations("room_bookings", ["room"])
     )

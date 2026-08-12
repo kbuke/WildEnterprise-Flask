@@ -15,7 +15,8 @@ class AllRoomRates(BaseResource):
         "endDate": "end_date",
         "modifier": "modifier_type",
         "value": "value",
-        "roomId": "room_id"
+        "roomId": "room_id",
+        "priority": "priority"
     }
 
     def get(self):
@@ -34,7 +35,8 @@ class SpecificRoomRates(BaseResource):
         "endDate": "end_date",
         "modifier": "modifier_type",
         "value": "value",
-        "roomId": "room_id"
+        "roomId": "room_id",
+        "priority": "priority"
     }
 
     def get(self, id):

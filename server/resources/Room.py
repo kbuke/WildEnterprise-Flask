@@ -5,7 +5,8 @@ from models.HotelModels.RoomModel import RoomModel
 
 from decorators.require_hotel_login import require_hotel_login
 
-from functions.check_room_ownership import check_room_ownership
+# from functions.check_room_ownership import check_room_ownership
+from functions.check_hotel_ownership import check_hotel_ownership
 
 class AllRooms(BaseResource):
     model = RoomModel
@@ -44,14 +45,18 @@ class SpecificRoom(BaseResource):
     def get(self, id):
         return self.get_specific(id)
 
+    @require_hotel_login
     def patch(self, id):
-        room, error = check_room_ownership(id)
+        # room, error = check_room_ownership(id)
+        room, error = check_hotel_ownership(id, "Room", RoomModel)
         if error: 
             return error
         return self.patch_instance(id)
 
+    @require_hotel_login
     def delete(self, id):
-        room, error = check_room_ownership(id)
+        # room, error = check_room_ownership(id)
+        room, error = check_hotel_ownership(id, "Room", RoomModel)
         if error:
             return error
         return self.delete_instance(id)

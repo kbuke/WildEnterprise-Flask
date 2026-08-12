@@ -4,6 +4,8 @@ from resources.Hotel import AllHotels, SpecificHotel, HotelChageCredentials
 from resources.HotelLogin import HotelLogin, HotelLogout, HotelCheckSession
 from resources.AdminLogin import AdminLogin, AdminLogout, AdminCheckSession
 from resources.Room import AllRooms, SpecificRoom
+from resources.Discount import AllDiscounts, SpecificDiscount
+from resources.LeadTimeRule import AllLeadTimeRule, SpecificLeadTimeRule
 
 api.add_resource(AllHotels, "/hotels")
 api.add_resource(SpecificHotel, "/hotels/<int:id>")
@@ -19,6 +21,12 @@ api.add_resource(AdminCheckSession, "/admin/checksession")
 
 api.add_resource(AllRooms, "/rooms")
 api.add_resource(SpecificRoom, "/rooms/<int:id>")
+
+api.add_resource(AllDiscounts, "/discounts")
+api.add_resource(SpecificDiscount, "/discounts/<int:id>")
+
+api.add_resource(AllLeadTimeRule, "/leadtimes")
+api.add_resource(SpecificLeadTimeRule, "/leadtimes/<int:id>")
 
 if __name__ == "__main__":
     app.run(port = 5555, debug = True)

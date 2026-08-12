@@ -23,7 +23,8 @@ class RoomModel(db.Model, SerializerMixin):
     base_price = db.Column(db.Float, nullable = False)
 
     hotel_id = one_to_many_fk("hotels")
-    hotel = one_to_many_rltshp("HotelModel", "rooms")
+    hotel = db.relationship("HotelModel", back_populates = "rooms")
+    # hotel = one_to_many_rltshp("HotelModel", "rooms")
 
     @validates("no_of_rooms")
     def validate_room_numbers(self, key, value):
@@ -39,4 +40,8 @@ class RoomModel(db.Model, SerializerMixin):
 
     serialize_rules = (
         "-hotel.rooms",
+        "-discounts.room",
+        "-discounts.hotel",
+        "-lead_times.hotel",
+        "-lead_times.room",
     )

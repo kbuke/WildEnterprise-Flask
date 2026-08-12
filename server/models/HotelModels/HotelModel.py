@@ -6,6 +6,7 @@ from sqlalchemy.orm import validates
 from sqlalchemy_serializer import SerializerMixin
 
 from functions.validate_slug import validate_slug
+from functions.validate_email import validate_email
 
 class HotelModel(db.Model, SerializerMixin):
     __tablename__ = "hotels"
@@ -19,9 +20,18 @@ class HotelModel(db.Model, SerializerMixin):
     email = db.Column(db.String, nullable = False, unique = True)
     _password_hash = db.Column("password_hash", db.String, nullable = False)
 
+    rooms = db.relationship(
+        "RoomModel",
+        back_populates = "hotel",
+        cascade = "all, delete-orphan"
+    )
+
     serialize_rules = (
         "-_password_hash",
         "-rooms.hotel",
+        "-discounts.hotel",
+        "-lead_times.hotel",
+        "-lead_times.room",
     )
 
     @validates("slug")
@@ -30,11 +40,7 @@ class HotelModel(db.Model, SerializerMixin):
 
     @validates("email")
     def validate_email(self, key, value):
-        email_regex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-
-        if not re.match(email_regex, value):
-            raise ValueError(f"{value} is not an email address")
-        return value
+        return validate_email(value)
 
     @property
     def password_hash(self):

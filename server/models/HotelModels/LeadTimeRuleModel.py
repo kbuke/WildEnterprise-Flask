@@ -4,6 +4,8 @@ from sqlalchemy.orm import validates
 
 from relational_functions.one_to_many import one_to_many_fk, one_to_many_rltshp
 
+from functions.serialize_relations import serialize_relations
+
 class LeadTimeRuleModel(db.Model, SerializerMixin):
     """
     This model is used to determine discounts or premiums based on when the user makes a booking 
@@ -25,12 +27,7 @@ class LeadTimeRuleModel(db.Model, SerializerMixin):
     room = one_to_many_rltshp("RoomModel", "lead_times")
 
     serialize_rules = (
-        "-hotel.lead_times",
-        "-hotel.rooms",
-        "-hotel.discounts",
-
-        "-room.lead_times",
-        "-room.hotel",
-        "-room.discounts",
+        serialize_relations("hotel", ["lead_times", "rooms", "discounts"]) + 
+        serialize_relations("room", ["lead_times", "hotel", "discounts"])
     )
 

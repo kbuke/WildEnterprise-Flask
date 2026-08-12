@@ -6,6 +6,7 @@ from resources.AdminLogin import AdminLogin, AdminLogout, AdminCheckSession
 from resources.Room import AllRooms, SpecificRoom
 from resources.Discount import AllDiscounts, SpecificDiscount
 from resources.LeadTimeRule import AllLeadTimeRule, SpecificLeadTimeRule
+from resources.RoomRates import AllRoomRates, SpecificRoomRates
 
 api.add_resource(AllHotels, "/hotels")
 api.add_resource(SpecificHotel, "/hotels/<int:id>")
@@ -27,6 +28,9 @@ api.add_resource(SpecificDiscount, "/discounts/<int:id>")
 
 api.add_resource(AllLeadTimeRule, "/leadtimes")
 api.add_resource(SpecificLeadTimeRule, "/leadtimes/<int:id>")
+
+api.add_resource(AllRoomRates, "/roomrates")
+api.add_resource(SpecificRoomRates, "/roomrates/<int:id>")
 
 if __name__ == "__main__":
     app.run(port = 5555, debug = True)

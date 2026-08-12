@@ -1,5 +1,6 @@
 from sqlalchemy.orm import validates
 from functions.validate_dates import make_date_range_validators
+from functions.serialize_relations import serialize_relations
 from config import db 
 from sqlalchemy_serializer import SerializerMixin
 from relational_functions.one_to_many import one_to_many_rltshp, one_to_many_fk
@@ -36,8 +37,6 @@ class DiscountModel(db.Model, SerializerMixin):
     validate_stay_end_date = validates("stay_end_date")(validate_stay_end_date)
 
     serialize_rules = (
-        "-hotel.discounts",
-        "-hotel.rooms",
-        "-room.discounts",
-        "-room.hotel",
+        serialize_relations("hotel", ["discounts", "rooms"]) +
+        serialize_relations("room", ["discounts", "hotel"])
     )

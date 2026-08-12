@@ -7,6 +7,7 @@ from sqlalchemy_serializer import SerializerMixin
 
 from functions.validate_slug import validate_slug
 from functions.validate_email import validate_email
+from functions.serialize_relations import serialize_relations
 
 class HotelModel(db.Model, SerializerMixin):
     __tablename__ = "hotels"
@@ -27,11 +28,10 @@ class HotelModel(db.Model, SerializerMixin):
     )
 
     serialize_rules = (
-        "-_password_hash",
-        "-rooms.hotel",
-        "-discounts.hotel",
-        "-lead_times.hotel",
-        "-lead_times.room",
+        serialize_relations("_password_hash") +
+        serialize_relations("rooms", ["hotel", "discounts", "lead_times"]) +
+        serialize_relations("discounts", ["hotel", "room"]) +
+        serialize_relations("lead_times", ["hotel", "room"])
     )
 
     @validates("slug")

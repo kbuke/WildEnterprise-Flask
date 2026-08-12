@@ -4,6 +4,7 @@ from sqlalchemy.orm import validates
 from sqlalchemy_serializer import SerializerMixin
 
 from functions.str_to_int import str_to_number
+from functions.serialize_relations import serialize_relations
 
 from relational_functions.one_to_many import one_to_many_rltshp, one_to_many_fk
 
@@ -39,9 +40,7 @@ class RoomModel(db.Model, SerializerMixin):
         return str_to_number(value, "Float")
 
     serialize_rules = (
-        "-hotel.rooms",
-        "-discounts.room",
-        "-discounts.hotel",
-        "-lead_times.hotel",
-        "-lead_times.room",
+        serialize_relations("hotel", ["rooms"]) +
+        serialize_relations("discounts", ["room", "hotel"]) +
+        serialize_relations("lead_times", ["hotel", "room"])
     )

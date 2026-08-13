@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@layer base {
+  button{
+    @apply
+    cursor-pointer hover:-translate-y-2 duration-200 py-2 px-8 rounded-lg uppercase text-white
+  }
+}
+
+@layer components {
+  /* ADMIN LOGIN SECTION */
+  .adminLoginSection{
+    @apply 
+    h-screen w-full bg-center bg-no-repeat bg-cover flex flex-col /* Applicable to all screen sizes */
+    items-center justify-center
+  }
+
+  .adminLoginDiv{
+    @apply
+    bg-black/70 text-white rounded-lg p-8
+    h-[80%] w-[90%]
+
+    lg:ml-auto lg:mr-8 lg:w-[40%] lg:h-[60%]
+  }
+
+  .adminLoginForm{
+    @apply
+    text-center flex flex-col justify-center h-full
+  }
+
+  .adminLoginInputs{
+    @apply
+    border-b focus:outline-0
+    w-full text-center text-xl
+  }
+
+  /* MISCELANEOUS CLASSES */
+  .formHeader{
+    @apply
+    text-4xl uppercase
+    tracking-[4px]
+  }
+
+  .submitFormButton{
+    @apply
+    bg-green-600
+  }
+
+  .redButton{
+    @apply
+    bg-red-600
+  }
+}

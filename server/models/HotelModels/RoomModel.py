@@ -45,7 +45,7 @@ class RoomModel(db.Model, SerializerMixin):
         return str_to_number(value, "Float")
 
     serialize_rules = (
-        serialize_relations("hotel", ["rooms"]) +
+        serialize_relations("hotel", ["rooms", "discounts", "lead_times", "reviews"]) +
         serialize_relations("discounts", ["room", "hotel"]) +
         serialize_relations("lead_times", ["hotel", "room"]) + 
         serialize_relations("room_bookings", ["room"])

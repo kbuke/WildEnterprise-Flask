@@ -26,6 +26,7 @@ class HotelModel(db.Model, SerializerMixin):
     rooms = one_to_many_back_populates("RoomModel", "hotel")
     discounts = one_to_many_back_populates("DiscountModel", "hotel")
     lead_times = one_to_many_back_populates("LeadTimeRuleModel", "hotel")
+    reviews = one_to_many_back_populates("ReviewModel", "hotel")
 
     serialize_rules = (
         serialize_relations("_password_hash") +

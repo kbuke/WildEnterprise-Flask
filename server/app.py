@@ -9,6 +9,9 @@ from resources.LeadTimeRule import AllLeadTimeRule, SpecificLeadTimeRule
 from resources.RoomRates import AllRoomRates, SpecificRoomRates
 from resources.Booking import AllBookings, SpecificBookings, CreateBooking, ChangeBookingDates, ChangeBookingRoomQuantity
 from resources.RoomBooking import AllRoomBookings, SpecificRoomBooking
+from resources.Availability import SearchAvailability
+from resources.RoomHold import CreateHold
+from resources.Review import AllReviews, SpecificReviews
 
 api.add_resource(AllHotels, "/hotels")
 api.add_resource(SpecificHotel, "/hotels/<int:id>")
@@ -42,6 +45,12 @@ api.add_resource(ChangeBookingDates, "/bookings/<int:id>/edit")
 api.add_resource(AllRoomBookings, "/roombookings")
 api.add_resource(SpecificRoomBooking, "/roombookings/<int:id>")
 api.add_resource(ChangeBookingRoomQuantity, "/roombookings/<int:id>/quantity")
+
+api.add_resource(SearchAvailability, "/availability")
+api.add_resource(CreateHold, "/holds")
+
+api.add_resource(AllReviews, "/reviews")
+api.add_resource(SpecificReviews, "/reviews/<int:id>")
 
 if __name__ == "__main__":
     app.run(port = 5555, debug = True)

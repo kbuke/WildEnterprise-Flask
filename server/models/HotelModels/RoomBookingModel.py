@@ -11,6 +11,8 @@ from functions.serialize_relations import serialize_relations
 from models.HotelModels.BookingModel import BookingModel
 from models.HotelModels.RoomModel import RoomModel
 
+from functions.holds import get_active_hold_quantity
+
 class RoomBookingModel(db.Model, SerializerMixin):
     """
     This is an "ASSOCIATION OBJECT (not a secondary table), which is a class-model representing the link between two other tables while adding extra data, attribute and methods
@@ -57,3 +59,9 @@ def get_available_rooms(
     room = RoomModel.query.get(room_id)
     booked = get_booked_quantity(room_id, arrival_date, departure_date, exclude_booking_id)
     return room.no_of_rooms - booked
+
+def get_available_rooms(room_id, arrival_date, departure_date, exclude_booking_id=None, exclude_session_token=None):
+    room = RoomModel.query.get(room_id)
+    booked = get_booked_quantity(room_id, arrival_date, departure_date, exclude_booking_id)
+    held = get_active_hold_quantity(room_id, arrival_date, departure_date, exclude_session_token)
+    return room.no_of_rooms - booked - held

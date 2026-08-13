@@ -46,29 +46,29 @@ class BaseResource(Resource):
             return {"error": [str(e)]}, 400
     
     # Patch Current Instance in Model
-    def patch_instance(self, id):
+    def patch_instance(self, id, data=None):
         record = self.model.query.filter(self.model.id == id).first()
-        data = request.get_json()
+        if data is None:
+            data = request.get_json()
 
         if not record:
-            return{"error": f"{self.model.__name__} {id} not registered"}, 404
-        
+            return {"error": f"{self.model.__name__} {id} not registered"}, 404
+
         try:
             mapped_data = {}
-
             for key, value in data.items():
                 mapped_key = getattr(self, "field_map", {}).get(key, key)
                 mapped_data[mapped_key] = value
-            
+
             for attr, val in mapped_data.items():
                 setattr(record, attr, val)
-            
+
             db.session.commit()
             return make_response(record.to_dict(), 202)
-        
+
         except (ValueError, IntegrityError) as e:
             db.session.rollback()
-            return{"error": [str(e)]}, 400
+            return {"error": [str(e)]}, 400
     
     # Delete Current Instance in Model
     def delete_instance(self, id):

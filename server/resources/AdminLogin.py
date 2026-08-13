@@ -19,7 +19,7 @@ class AdminLogin(Resource):
             return {"error": "Invalid email or password"}, 401 
 
         session["is_admin"] = True
-        return {"email": admin_email}, 200 
+        return {"email": admin_email, "is_admin": True}, 200 
 
 class AdminLogout(Resource):
     def delete(self):
@@ -30,4 +30,4 @@ class AdminCheckSession(Resource):
     def get(self):
         if not session.get("is_admin"):
             return {"error": "Not logged in"}, 401
-        return {"email": os.getenv("ADMIN_EMAIL")}, 200
+        return {"email": os.getenv("ADMIN_EMAIL"), "is_admin": True}, 200

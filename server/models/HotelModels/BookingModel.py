@@ -14,6 +14,8 @@ from datetime import date, timedelta
 
 from relational_functions.one_to_many import one_to_many_back_populates
 
+from functions.validate_email import validate_email
+
 
 def calculate_deposit_date(context):
     arrival = context.get_current_parameters()["arrival_date"]
@@ -39,11 +41,20 @@ class BookingModel(db.Model, SerializerMixin):
     date_of_deposit_charge = db.Column(db.Date, nullable=False, default=calculate_deposit_date)
     date_of_remainder_charge = db.Column(db.Date, nullable=False, default=calculate_remainder_date)
 
-    # room_bookings = db.relationship("RoomBookingModel", back_populates="booking", cascade = "all, delete-orphan")
     room_bookings = one_to_many_back_populates("RoomBookingModel", "booking")
 
     serialize_rules = serialize_relations("room_bookings", ["booking", "room"])
 
-    # @validates("email")
-    # def validate_user_email(self, key, value):
-    #     return validate_email(value)
+    @validates("email")
+    def validate_email(self, key, value):
+        return validate_email(value)
+
+    @validates("arrival_date", "departure_date")
+    def validate_booking_dates(self, key, value):
+        if key == "arrival_date":
+            if value < date.today():
+                raise ValueError("You can not book a trip in the past")
+        elif key == "departure_date":
+            if self.arrival_date and value <= self.arrival_date:
+                raise ValueError("Departure date must be after arrival date")
+        return value

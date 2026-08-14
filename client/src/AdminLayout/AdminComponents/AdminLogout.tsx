@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom"
-import { useAdminLogout } from "../../Hooks/AdminHooks/useAdminLogout"
+import { useNavigate } from "react-router-dom";
+import { useAdminLogout } from "../../Hooks/AdminHooks/useAdminLogout";
 
-export function AdminPage(){
+export function AdminLogout(){
     const navigate = useNavigate()
     const adminLogout = useAdminLogout()
 
@@ -17,15 +17,11 @@ export function AdminPage(){
     }
 
     return(
-        <section>
-            <h1>Admin Page</h1>
-
-            <button
-                className="redButton"
-                onClick={handleLogout}
-            >
-                Logout
-            </button>
-        </section>
+        <button
+            className="redButton"
+            onClick={handleLogout}
+        >
+            Logout
+        </button>
     )
 }

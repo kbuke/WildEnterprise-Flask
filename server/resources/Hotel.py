@@ -6,6 +6,7 @@ from decorators.require_hotel_login import require_hotel_login
 from decorators.require_admin_login import require_admin_login
 
 from functions.check_hotel_id_session import check_hotel_id_session
+from functions.check_deletable import hotel_has_bookings
 
 from flask import request
 
@@ -55,6 +56,8 @@ class SpecificHotel(BaseResource):
     @require_admin_login
     def delete(self, id):
         check_hotel_id_session(id)
+        if hotel_has_bookings(id):
+            return {"error": "This hotel has existing bookings and can not be deleted."}
         return self.delete_instance(id)
 
 class HotelChageCredentials(Resource):

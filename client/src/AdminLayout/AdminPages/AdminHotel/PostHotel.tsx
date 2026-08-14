@@ -1,0 +1,49 @@
+import { useForm } from "react-hook-form";
+import type { CancelRequestType } from "../../../Types/CancelRequestType";
+import type { PostHotelType } from "../../../Types/HotelTypes";
+import { PopUp } from "../../../Components/PopUp";
+import { Forms } from "../../../Components/Forms";
+import { HotelInputs } from "./HotelInputs";
+import { usePostHotel } from "../../../Hooks/HotelHooks/usePostHotel";
+
+export function PostHotel({
+    onClose
+}: CancelRequestType){
+    const {
+        register,
+        handleSubmit,
+        watch,
+        setValue,
+        formState: {errors}
+    } = useForm<PostHotelType>({
+        shouldUnregister: true
+    })
+
+    const {mutate, isPending, isError, error} = usePostHotel()
+
+    const onSubmit = (formData: PostHotelType) => {
+        mutate(formData, {
+            onSuccess: () => {
+                onClose()
+            }
+        })
+    }
+
+    return(
+        <PopUp 
+            children={<Forms 
+                title={"Add New Hotel"}
+                onClose={onClose}
+                onSubmit={handleSubmit(onSubmit)}
+                fields={<HotelInputs 
+                    postOrPatch={"Post"}
+                    register={register}
+                    errors={errors}
+                    watch={watch}
+                />}
+                submitButtonTitle="Create New Hotel"
+                isPending = {isPending}
+            />}
+        />
+    )
+}

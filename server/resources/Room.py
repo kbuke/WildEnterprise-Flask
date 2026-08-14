@@ -7,6 +7,7 @@ from decorators.require_hotel_login import require_hotel_login
 
 # from functions.check_room_ownership import check_room_ownership
 from functions.check_hotel_ownership import check_hotel_ownership
+from functions.check_deletable import room_has_bookings
 
 class AllRooms(BaseResource):
     model = RoomModel
@@ -55,8 +56,11 @@ class SpecificRoom(BaseResource):
 
     @require_hotel_login
     def delete(self, id):
-        # room, error = check_room_ownership(id)
         room, error = check_hotel_ownership(id, "Room", RoomModel)
         if error:
             return error
+
+        if room_has_bookings(id):
+            return {"error": "This room has existing bookings and can not be deleted"}
+        
         return self.delete_instance(id)

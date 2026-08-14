@@ -34,6 +34,15 @@
     w-full text-center text-xl
   }
 
+  /* ADMIN SECTIONS */
+  /* .adminNavBar{
+    @apply
+  } */
+    .adminSections{
+      @apply
+      p-10 grid grid-cols-3
+    }
+
   /* MISCELANEOUS CLASSES */
   .formHeader{
     @apply
@@ -49,5 +58,10 @@
   .redButton{
     @apply
     bg-red-600
+  }
+
+  .navBar{
+    @apply 
+    flex items-center justify-between py-4 bg-green-600 px-10 sticky z-50
   }
 }

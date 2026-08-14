@@ -1,9 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import App from "./App";
-import { AdminLoginPg } from "./Pages/AdminLoginPage/AdminLoginPg";
-import { AdminPage } from "./Pages/AdminPage/AdminPage";
+import { AdminLoginPg } from "./IndependantLayouts/AdminLoginPage/AdminLoginPg";
+import { AdminHomePg } from "./AdminLayout/AdminPages/AdminHomePg";
 import { ProtectedAdminRoute } from "./Components/ProtectedAdminRoute";
+import { AdminLayout } from "./AdminLayout/AdminLayout";
+import { AdminHotel } from "./AdminLayout/AdminPages/AdminHotel/AdminHotel";
 
 export const router = createBrowserRouter([
     {
@@ -14,7 +16,20 @@ export const router = createBrowserRouter([
             {
                 element: <ProtectedAdminRoute />,
                 children: [
-                    {path: "/admindashboard", element: <AdminPage />}
+                    {
+                        element: <AdminLayout />,
+                        children: [
+                            {
+                                path: "/admindashboard",
+                                element: <AdminHomePg />
+                            },
+
+                            {
+                                path: "/adminhotel",
+                                element: <AdminHotel />
+                            }
+                        ]
+                    }
                 ]
             }
         ]

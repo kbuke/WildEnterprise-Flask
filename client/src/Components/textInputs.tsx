@@ -19,11 +19,12 @@ export function TextInputs({
     label,
     errorExtraClass
 }: TextInputTypes){
-    const textInput = <div>
+
+    const textInput = <div >
         <input 
             type={textType}
             placeholder={placeholder}
-            className={`${label ? null : extraClasses} ${error ? "mb-2" : "mb-10"}`}
+            className={`${label ? "border-b w-[40%]" : extraClasses} ${error ? "mb-0" : "mb-10"}`}
             {...register}
         />
 
@@ -38,8 +39,14 @@ export function TextInputs({
 
     return(
         label
-            ? <div>
-                <p>{label}</p>
+            ? <div
+                className="justify-center"
+            >
+                <p
+                    className="font-bold"
+                >
+                    {label}
+                </p>
                 {textInput}
             </div>
             :

@@ -1,11 +1,9 @@
-import re
-
 from config import db, bcrypt
 
 from sqlalchemy.orm import validates
 from sqlalchemy_serializer import SerializerMixin
 
-from functions.validate_slug import validate_slug
+from functions.validate_slug import validate_slug, make_slug_default
 from functions.validate_email import validate_email
 from functions.serialize_relations import serialize_relations
 
@@ -16,7 +14,7 @@ class HotelModel(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String, nullable = False, unique = True)
-    slug = db.Column(db.String)
+    slug = db.Column(db.String, unique = True, default=make_slug_default("name"))
     location = db.Column(db.String, nullable = False)
     img = db.Column(db.String, nullable = False, unique = True)
     info = db.Column(db.String, nullable = False)
@@ -36,7 +34,7 @@ class HotelModel(db.Model, SerializerMixin):
     )
 
     @validates("slug")
-    def validate_slug(self, key, value):
+    def validate_slug_format(self, key, value):
         return validate_slug(value)
 
     @validates("email")

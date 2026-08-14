@@ -20,14 +20,14 @@ export function Forms({
 }: FormType){
     return(
         <form
-            className="bg-white h-[80%] w-[60%] self-center rounded overflow-y-auto" 
+            className="bg-white h-[90%] w-[90%] lg:h-[80%] lg:w-[60%] self-center rounded overflow-y-auto" 
             onSubmit={onSubmit}
         >
             <div
                 className="flex items-center py-4 px-12 justify-between border-b-2 sticky z-50 top-0 bg-white"
             >
                 <h1
-                    className="text-3xl font-bold"
+                    className="text-xl lg:text-3xl font-bold"
                 >
                     {title}
                 </h1>

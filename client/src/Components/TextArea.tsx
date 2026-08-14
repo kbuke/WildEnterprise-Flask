@@ -24,7 +24,7 @@ export function TextArea({
             </p>
             <textarea 
                 placeholder={placeholder}
-                className={`border w-[40%] px-4 py-2 rounded h-60 ${error ? null : extraClasses}`}
+                className={`border w-[90%] lg:w-[40%] px-4 py-2 rounded h-60 ${error ? null : extraClasses}`}
                 {...register}
             />
             {error &&

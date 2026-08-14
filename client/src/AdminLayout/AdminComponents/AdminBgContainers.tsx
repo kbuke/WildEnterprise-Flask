@@ -18,7 +18,7 @@ export function AdminBgContainers({
             style={{
                 backgroundImage: `url(${img ? img : `/Admin${imgPath}BgImg.jpg`})`
             }}
-            className="block relative bg-no-repeat bg-center bg-cover h-80 w-100 border rounded-lg border-none"
+            className="block relative bg-no-repeat bg-center bg-cover h-80 w-100 border rounded-lg border-none mb-4"
             to={slug ? slug : `/admin${imgPath?.toLowerCase()}`}
         >
             <div

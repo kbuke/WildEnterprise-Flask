@@ -24,7 +24,7 @@ export function TextInputs({
         <input 
             type={textType}
             placeholder={placeholder}
-            className={`${label ? "border-b w-[40%]" : extraClasses} ${error ? "mb-0" : "mb-10"}`}
+            className={`${label ? "border-b w-[90%] lg:w-[40%]" : extraClasses} ${error ? "mb-0" : "mb-10"}`}
             {...register}
         />
 

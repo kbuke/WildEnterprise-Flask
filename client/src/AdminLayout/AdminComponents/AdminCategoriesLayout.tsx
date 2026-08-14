@@ -41,7 +41,8 @@ export function AdminCategoriesLayout<T extends AdminInstance>({
             </div>
 
             <div
-                className="grid grid-cols-3 gap-20"
+                className="
+                lg:grid lg:grid-cols-3 lg:gap-20"
             >
                 {instanceArrays.map((instance, index) => {
                     return(

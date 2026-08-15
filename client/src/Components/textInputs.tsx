@@ -30,7 +30,7 @@ export function TextInputs({
 
         {error &&
             <p
-                className={`text-red-400 ${errorExtraClass}`}
+                className={`text-red-400 mb-4 ${errorExtraClass}`}
             >
                 {error.message}
             </p>

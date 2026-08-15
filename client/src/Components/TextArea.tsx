@@ -29,7 +29,7 @@ export function TextArea({
             />
             {error &&
                 <p
-                    className="text-red-600"
+                    className="text-red-600 mb-4"
                 >
                     {error.message}
                 </p>

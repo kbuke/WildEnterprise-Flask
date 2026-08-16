@@ -28,3 +28,9 @@ export type CheckHotelSessionType = {
     id: number
     is_hotel_admin: true
 }
+
+export type PatchHotelCredentialsType = {
+    newEmail: string,
+    newPassword: string,
+    currentPassword: string
+}

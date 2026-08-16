@@ -12,7 +12,6 @@ export function PostHotel({
     const {
         register,
         handleSubmit,
-        watch,
         setValue,
         formState: {errors}
     } = useForm<PostHotelType>({
@@ -39,7 +38,6 @@ export function PostHotel({
                     postOrPatch={"Post"}
                     register={register}
                     errors={errors}
-                    watch={watch}
                 />}
                 submitButtonTitle="Create New Hotel"
                 isPending = {isPending}

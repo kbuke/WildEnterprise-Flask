@@ -7,14 +7,12 @@ type PostHotelInputType = {
     postOrPatch: "Post" | "Patch",
     register: UseFormRegister<PostHotelType | PatchHotelType>
     errors: FieldErrors<PostHotelType>
-    watch?: UseFormWatch<PostHotelType>
 }
 
 export function HotelInputs({
     postOrPatch,
     register,
-    errors,
-    watch
+    errors
 }: PostHotelInputType){
     return(
         <>

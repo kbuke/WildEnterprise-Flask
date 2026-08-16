@@ -37,39 +37,43 @@ class AllHotels(BaseResource):
 
 class SpecificHotel(BaseResource):
     model = HotelModel
-    
-    field_map = {
-        "name": "name",
-        "location": "location",
-        "img": "img",
-        "info": "info",
-    }
+    field_map = { "name": "name", "location": "location", "img": "img", "info": "info" }
 
     def get(self, id):
         return self.get_specific(id)
 
     @require_hotel_login
     def patch(self, id):
-        check_hotel_id_session(id)
+        error = check_hotel_id_session(id)
+        if error:
+            return error
         return self.patch_instance(id)
 
     @require_admin_login
     def delete(self, id):
-        check_hotel_id_session(id)
         if hotel_has_bookings(id):
-            return {"error": "This hotel has existing bookings and can not be deleted."}
+            return {"error": "This hotel has existing bookings and cannot be deleted."}, 409
         return self.delete_instance(id)
+
 
 class HotelChageCredentials(Resource):
     @require_hotel_login
     def patch(self, id):
-        check_hotel_id_session(id)
+        error = check_hotel_id_session(id)
+        if error:
+            return error
 
         hotel = HotelModel.query.get(id)
+        if not hotel:
+            return {"error": f"Hotel {id} not found"}, 404
+
         data = request.get_json()
 
+        if not data.get("newEmail") and not data.get("newPassword"):
+            return {"error": "Please provide a new email or a new password"}, 400
+
         if not hotel.authenticate(data.get("currentPassword", "")):
-            return {"error": "Current password is not correct"}, 401 
+            return {"error": "Current password is not correct"}, 401
 
         try:
             if data.get("newEmail"):
@@ -78,8 +82,8 @@ class HotelChageCredentials(Resource):
                 hotel.password_hash = data["newPassword"]
 
             db.session.commit()
-            return hotel.to_dict(), 200 
-        
+            return hotel.to_dict(), 200
+
         except (ValueError, IntegrityError) as e:
             db.session.rollback()
             return {"error": [str(e)]}, 400

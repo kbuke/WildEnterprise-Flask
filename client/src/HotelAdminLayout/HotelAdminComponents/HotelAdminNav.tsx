@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { HotelLogout } from "./HotelLogout"
 import { PatchHotelInfo } from "./PatchHotelInfo"
+import { PatchHotelCredentials } from "./PatchHotelCredentials"
 
 type NavIconObjectType = {
     img: string,
@@ -18,6 +19,7 @@ export function HotelAdminNav({
 
     const [logout, setLogout] = useState<boolean>(false)
     const [patchHotelInfo, setPatchHotelInfo] = useState<boolean>(false)
+    const [patchHotelCredentials, setPatchHotelCredentials] = useState<boolean>(false)
     
     // function NavIconObject({})
     const navIconObject = ({img, tag, setAction}: NavIconObjectType) => {
@@ -32,7 +34,7 @@ export function HotelAdminNav({
 
     const navArray = [
         navIconObject({img: "/Info.png", tag: "Info", setAction: () => setPatchHotelInfo(true)}),
-        navIconObject({img: "/Password.png", tag: "Private"}),
+        navIconObject({img: "/Password.png", tag: "Private", setAction: () => setPatchHotelCredentials(true)}),
         navIconObject({img: "/Logout.png", tag: "Logout", setAction: () => setLogout(true)})
     ]
 
@@ -71,6 +73,13 @@ export function HotelAdminNav({
             {patchHotelInfo &&
                 <PatchHotelInfo 
                     onClose={() => setPatchHotelInfo(false)}
+                    hotelId={id}
+                />
+            }
+
+            {patchHotelCredentials &&
+                <PatchHotelCredentials 
+                    onClose={() => setPatchHotelCredentials(false)}
                     hotelId={id}
                 />
             }

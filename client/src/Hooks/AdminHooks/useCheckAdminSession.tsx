@@ -12,11 +12,13 @@ async function checkAdminSession(): Promise<{ is_admin: boolean }> {
     return res.json();
 }
 
-export function useCheckAdminSession() {
+export function useCheckAdminSession(options?: {enabled?: boolean}) {
     return useQuery({
         queryKey: ["adminSession"],
         queryFn: checkAdminSession,
         retry: false,
-        staleTime: 0
+        staleTime: 0,
+        gcTime: 0,
+        enabled: options?.enabled ?? true
     });
 }

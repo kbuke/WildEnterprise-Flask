@@ -1,13 +1,13 @@
 import type { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form"
 import { TextInputs } from "../../../Components/textInputs"
-import type { PostHotelType } from "../../../Types/HotelTypes"
+import type { PatchHotelType, PostHotelType } from "../../../Types/HotelTypes"
 import { TextArea } from "../../../Components/TextArea"
 
 type PostHotelInputType = {
     postOrPatch: "Post" | "Patch",
-    register: UseFormRegister<PostHotelType>
+    register: UseFormRegister<PostHotelType | PatchHotelType>
     errors: FieldErrors<PostHotelType>
-    watch: UseFormWatch<PostHotelType>
+    watch?: UseFormWatch<PostHotelType>
 }
 
 export function HotelInputs({

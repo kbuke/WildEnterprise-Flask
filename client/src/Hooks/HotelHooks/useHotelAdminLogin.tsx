@@ -28,7 +28,7 @@ export function usePostHotelAdminLogin(){
     return useMutation({
         mutationFn: postHotelAdminLogin,
         onSuccess: () => {
-            queryClient.setQueryData(["adminSession"], {is_admin: true})
+            queryClient.setQueryData(["hotelAdminSession"], {is_hotel_admin: true})
         }
     });
 }

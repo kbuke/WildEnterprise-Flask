@@ -5,9 +5,9 @@ type FormType = {
     title: string
     onClose: () => void
     onSubmit: () => void
-    fields: ReactNode
+    fields?: ReactNode
     submitButtonTitle?: string,
-    isPending: boolean
+    isPending?: boolean
 }
 
 export function Forms({

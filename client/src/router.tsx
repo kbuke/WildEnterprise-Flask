@@ -7,7 +7,8 @@ import { ProtectedAdminRoute } from "./Components/ProtectedAdminRoute";
 import { AdminLayout } from "./AdminLayout/AdminLayout";
 import { AdminHotel } from "./AdminLayout/AdminPages/AdminHotel/AdminHotel";
 import { HotelAdminLoginPg } from "./IndependantLayouts/HotelAdminLoginPage/HotelAdminLoginPg";
-import { HotelAdmonDashboard } from "./HotelAdminLayout/HotelAdminDashboard";
+import { HotelAdmonDashboard } from "./HotelAdminLayout/HotelAdminPages/HotelAdminDashboard";
+import { HotelAdminLayout } from "./HotelAdminLayout/HotelAdminLayout";
 
 export const router = createBrowserRouter([
     {
@@ -17,7 +18,9 @@ export const router = createBrowserRouter([
             {path: "/adminlogin", element: <AdminLoginPg />},
             {path: "/hoteladminlogin", element: <HotelAdminLoginPg />},
             {
-                element: <ProtectedAdminRoute />,
+                element: <ProtectedAdminRoute 
+                    type="Admin"
+                />,
                 children: [
                     {
                         element: <AdminLayout />,
@@ -35,7 +38,22 @@ export const router = createBrowserRouter([
                     }
                 ]
             },
-            {path: "/hoteladmindashboard", element: <HotelAdmonDashboard />}
+            {
+                element: <ProtectedAdminRoute 
+                    type="Hotel"
+                />,
+                children: [
+                    {
+                        element: <HotelAdminLayout />,
+                        children: [
+                            {
+                                path: "/hoteladmindashboard",
+                                element: <HotelAdmonDashboard />
+                            }
+                        ]
+                    }
+                ]
+            }
         ]
     }
 ])

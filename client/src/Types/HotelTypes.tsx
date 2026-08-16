@@ -16,3 +16,15 @@ export type PostHotelType = {
     email: string, 
     password: string
 }
+
+export type PatchHotelType = {
+    name: string,
+    location: string,
+    img: string,
+    info: string
+}
+
+export type CheckHotelSessionType = {
+    id: number
+    is_hotel_admin: true
+}

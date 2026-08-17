@@ -1,4 +1,4 @@
-import { useScrollLock } from "../Hooks/useScrollLock";
+import { useScrollLock } from "../Hooks/HotelHooks/useScrollLock";
 import type { ReactNode } from "react";
 
 type PopUpPropType = {

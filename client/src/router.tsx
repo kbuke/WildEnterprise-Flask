@@ -9,6 +9,8 @@ import { AdminHotel } from "./AdminLayout/AdminPages/AdminHotel/AdminHotel";
 import { HotelAdminLoginPg } from "./IndependantLayouts/HotelAdminLoginPage/HotelAdminLoginPg";
 import { HotelAdmonDashboard } from "./HotelAdminLayout/HotelAdminPages/HotelAdminDashboard";
 import { HotelAdminLayout } from "./HotelAdminLayout/HotelAdminLayout";
+import { HotelDiscounts } from "./HotelAdminLayout/HotelAdminPages/HotelDiscounts/HotelDiscounts";
+import { HotelRooms } from "./HotelAdminLayout/HotelAdminPages/HotelRooms/HotelRooms";
 
 export const router = createBrowserRouter([
     {
@@ -49,6 +51,16 @@ export const router = createBrowserRouter([
                             {
                                 path: "/hoteladmindashboard",
                                 element: <HotelAdmonDashboard />
+                            },
+
+                            {
+                                path: `/:slug/discounts`,
+                                element: <HotelDiscounts />
+                            },
+
+                            {
+                                path: "/:slug/rooms",
+                                element: <HotelRooms />
                             }
                         ]
                     }

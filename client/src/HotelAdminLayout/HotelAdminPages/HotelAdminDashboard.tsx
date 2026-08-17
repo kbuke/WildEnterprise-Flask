@@ -1,5 +1,13 @@
+import { Link } from "react-router-dom"
 import { LoadingIcon } from "../../Components/LoadingIcon"
 import { useCheckHotelAdminSession } from "../../Hooks/HotelHooks/useCheckHotelAdminSession"
+
+type HotelEditableObjectType = {
+    tag: string,
+    icon: string,
+    info: string,
+    link: string
+}
 
 export function HotelAdmonDashboard(){
     const {data, isLoading} = useCheckHotelAdminSession()
@@ -11,13 +19,93 @@ export function HotelAdmonDashboard(){
         return null
     }
 
-    const hotelId = data.id
+    const {
+        id,
+        name, 
+        slug,
+    } = data
+
+    const hotelEditablesObject = ({
+        tag,
+        icon,
+        info,
+        link
+    }: HotelEditableObjectType) => {
+        return(
+            {
+                tag: tag,
+                icon: icon,
+                info: info,
+                link: link
+            }
+        )
+    }
+
+    const hotelEditableArray = [
+        hotelEditablesObject({
+            tag: "Discounts", 
+            icon:"/discounts.png",
+            info: "Create, delete, and edit existing discounts for your hotel.",
+            link: `/${slug}/discounts`
+        }),
+
+        hotelEditablesObject({
+            tag: "Rooms",
+            icon: "/rooms.png",
+            info:"Create, edit and delete information on your rooms.",
+            link: `/${slug}/rooms`
+        }),
+
+        hotelEditablesObject({
+            tag: "Lead Times",
+            icon: "/leadTimes.png",
+            info:"Set rates dependant on the time given before guests arrival",
+            link: "/hotelleadtimes"
+        })
+    ]
+
     
     return(
         <div
-            className="py-6"
+            className="py-6 px-12"
         >
-            Hotel Logged In
+            <h1>Welcome {name}</h1>
+
+            <div
+                className="grid grid-cols-3 gap-10"
+            >
+                {hotelEditableArray.map((hotelDependant, index) => {
+                    const {
+                        tag, icon, info, link
+                    } = hotelDependant
+
+                    return(
+                        <Link
+                            key={index}
+                            className="bg-gray-200 p-10 flex flex-col items-center rounded-lg cursor-pointer"
+                            to={link}
+                            state={{id}}
+                        >
+                            <img 
+                                src={icon}
+                                className="h-24"
+                            />
+
+                            <h2
+                                className="font-bold uppercase text-xl mt-4"
+                            >
+                                {tag}
+                            </h2>
+
+                            <p
+                                className="mt-2"
+                            >
+                                {info}
+                            </p>
+                        </Link>
+                    )
+                })}
+            </div>
         </div>
     )
 }

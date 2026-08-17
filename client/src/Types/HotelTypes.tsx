@@ -1,3 +1,6 @@
+import type { FetchDiscountTypes } from "./DiscountTypes"
+import type { FetchRoomType } from "./RoomTypes"
+
 export type FetchHotelsType = {
     id: number,
     name: string,
@@ -5,7 +8,10 @@ export type FetchHotelsType = {
     location: string,
     img: string,
     info: string,
-    email: string
+    email: string,
+
+    discounts: FetchDiscountTypes[],
+    rooms: FetchRoomType[]
 }
 
 export type PostHotelType = {
@@ -25,12 +31,20 @@ export type PatchHotelType = {
 }
 
 export type CheckHotelSessionType = {
-    id: number
-    is_hotel_admin: true
-}
+    is_hotel_admin: boolean
+    lead_times: []
+    discounts: []
+    reviews: []
+    rooms: []
+} & FetchHotelsType
 
 export type PatchHotelCredentialsType = {
     newEmail: string,
     newPassword: string,
     currentPassword: string
 }
+
+export type HotelRoomType = Pick<
+    FetchRoomType,
+    "name" | "img" | "no_of_rooms" | "max_people" | "base_price" | "hotel_id" | "id"
+>

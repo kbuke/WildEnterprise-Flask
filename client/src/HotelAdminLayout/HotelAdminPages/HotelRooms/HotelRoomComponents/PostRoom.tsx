@@ -1,59 +1,66 @@
-import { useForm } from "react-hook-form";
-import type { CancelRequestType } from "../../../../Types/CancelRequestType";
-import type { PostRoomType } from "../../../../Types/RoomTypes";
-import { usePostRoom } from "../../../../Hooks/RoomHooks/usePostRoom";
-import { PopUp } from "../../../../Components/PopUp";
-import { RoomInputs } from "./RoomInputs";
-import { Forms } from "../../../../Components/Forms";
-
-type HotelIdType = {
-    id?: number
-}
-
-type PostRoomProps = CancelRequestType & HotelIdType
+import { useForm } from "react-hook-form"
+import type { CancelRequestType } from "../../../../Types/CancelRequestType"
+import type { PostRoomType } from "../../../../Types/RoomTypes"
+import { PopUp } from "../../../../Components/PopUp"
+import { RoomInputs } from "./RoomInputs"
+import { Forms } from "../../../../Components/Forms"
+import { usePostInsatnce } from "../../../../Hooks/GeneralHooks/usePostInstance"
 
 export function PostRoom({
-    id,
-    onClose
-}: PostRoomProps){
+    onClose,
+    hotelId
+}: CancelRequestType & { hotelId: number }) {
 
     const {
         register,
         handleSubmit,
-        formState: {errors}
+        formState: { errors }
     } = useForm<PostRoomType>({
         shouldUnregister: true
     })
 
-    const {mutate, isPending, isError, error} = usePostRoom()
+    const {
+        mutate,
+        isPending,
+        isError,
+        error
+    } = usePostInsatnce<PostRoomType>()
 
     const onSubmit = (formData: PostRoomType) => {
+
         mutate({
-            ...formData,
-            hotelId: id
+            endpoint: "rooms",
+            values: {
+                ...formData,
+                hotelId: hotelId
+            },
+            queryKey: ["hotels", formData.hotelId]
         }, {
             onSuccess: () => {
                 onClose()
             }
         })
+
     }
 
-    return(
-        <PopUp 
-            children={<Forms 
-                title={"Add New Room"}
-                onClose={onClose}
-                onSubmit={handleSubmit(onSubmit)}
-                fields={
-                    <RoomInputs 
-                        postOrPatch="Post"
-                        register={register}
-                        errors={errors}
-                    />
-                }
-                submitButtonTitle="Create New Room"
-                isPending={isPending}
-            />}
+    return (
+        <PopUp
+            children={
+                <Forms
+                    title="Add New Room"
+                    onClose={onClose}
+                    onSubmit={handleSubmit(onSubmit)}
+                    fields={
+                        <RoomInputs
+                            postOrPatch="Post"
+                            register={register}
+                            errors={errors}
+                        />
+                    }
+                    submitButtonTitle="Create New Room"
+                    isPending={isPending}
+                />
+            }
         />
     )
 }

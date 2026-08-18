@@ -48,7 +48,7 @@ export function HotelRooms(){
             {roomAction === "Post" &&
                 <PostRoom 
                     onClose={() => setRoomAction(null)}
-                    id={hotel?.id}
+                    hotelId={hotel!.id}
                 />
             }
 

@@ -18,7 +18,7 @@ class AllDiscounts(BaseResource):
         "stayStart": "stay_start_date",
         "stayEnd": "stay_end_date",
         "roomId": "room_id",
-        "precentageOff": "percentage_off",
+        "percentageOff": "percentage_off",
         "hotelId": "hotel_id"
     }
 
@@ -42,7 +42,7 @@ class SpecificDiscount(BaseResource):
         "stayStart": "stay_start_date",
         "stayEnd": "stay_end_date",
         "roomId": "room_id",
-        "precentageOff": "percentage_off",
+        "percentageOff": "percentage_off",
         "hotelId": "hotel_id"
     }
 

@@ -47,7 +47,7 @@ export function HotelAdminNav({
 
     return(
         <div 
-            className="h-screen border-r flex flex-col justify-between px-6 py-12"
+            className="h-screen bg-gray-100/40 flex flex-col justify-between px-6 py-12 sticky top-0"
         >
             {navArray.map((navIcon, index) => {
                 const {purpose, img, tag, setAction, link} = navIcon

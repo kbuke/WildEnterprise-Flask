@@ -19,5 +19,5 @@ export type PostRoomType = {
     noOfRooms: string,
     maxPeople: string,
     basePrice: string,
-    hotelId?: number
+    hotelId?: number,
 }

@@ -1,5 +1,4 @@
 import { useState } from "react"
-import type { HotelRoomType } from "../../../Types/HotelTypes"
 import { FindHotel } from "../../HotelAdminComponents/FindHotel"
 import { PostRoom } from "./HotelRoomComponents/PostRoom"
 import { CardEditDelete } from "../../../Components/CardEditDelete"
@@ -18,7 +17,9 @@ export function HotelRooms(){
 
     const hotel = FindHotel()
 
-    const hotelRooms: HotelRoomType[] = hotel?.rooms ?? []
+    const hotelRooms = hotel?.rooms
+    const hotelId = hotel?.id
+    const hotelName = hotel?.name
 
     const labelInfo = ({
         label,
@@ -45,10 +46,12 @@ export function HotelRooms(){
         <div
             className="py-12"
         >
-            {roomAction === "Post" &&
+            {roomAction === "Post" && hotelId && hotelRooms && hotelName &&
                 <PostRoom 
+                    hotelName={hotelName}
                     onClose={() => setRoomAction(null)}
-                    hotelId={hotel!.id}
+                    hotelId={hotelId}
+                    hotelRooms={hotelRooms}
                 />
             }
 
@@ -63,7 +66,7 @@ export function HotelRooms(){
                 />
             }
 
-            {roomAction === "Patch" && selectedRoomId !== null && selectedRoomName !== null &&
+            {roomAction === "Patch" && selectedRoomId !== null && selectedRoomName !== null && hotelId && hotelRooms &&
                 <PatchRoom 
                     onClose={() => {
                         setRoomAction(null)
@@ -71,6 +74,8 @@ export function HotelRooms(){
                     }}
                     name={selectedRoomName}
                     id={selectedRoomId}
+                    hotelId={hotelId}
+                    hotelRooms={hotelRooms}
                 />
             }
             
@@ -91,7 +96,7 @@ export function HotelRooms(){
                 </button>
             </div>
 
-            {hotelRooms.length === 0 && <p
+            {hotelRooms?.length === 0 && <p
                 className="mt-4"
             >
                 No rooms to display
@@ -100,7 +105,7 @@ export function HotelRooms(){
             <div
                 className="mt-4 grid grid-cols-3 gap-20 overflow-x-hidden"
             >
-               {hotelRooms.map((room, index) => {
+               {hotelRooms?.map((room, index) => {
                 console.log(room)
                 const {name, img, no_of_rooms, max_people, base_price, id} = room
                 return(

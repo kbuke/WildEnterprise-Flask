@@ -1,20 +1,30 @@
 import { useState } from "react";
 import { TextInputs } from "../../../Components/textInputs";
-import type { PostPatchDiscountType } from "../../../Types/DiscountTypes";
+import type { FetchDiscountTypes, PostPatchDiscountType } from "../../../Types/DiscountTypes";
 import type { PostOrPatchType } from "../../../Types/PostOrPatchType";
 import { CheckBox } from "../../../Components/CheckBox";
 import { DropDown } from "../../../Components/DropDown";
 import type { FetchRoomType } from "../../../Types/RoomTypes";
 import { DateInputs } from "../../../Components/DateInputs";
 import { validateDateRange } from "../../../FormErrors/validateDateRange";
+import { validateNameWithId } from "../../../FormErrors/validateNameWithId";
 
+type DiscountInputProps = PostOrPatchType<
+    PostPatchDiscountType,
+    FetchRoomType,
+    FetchDiscountTypes
+> & {
+    hotelId: number
+}
 export function DiscountInputs({
     postOrPatch,
     register,
     errors,
     dependantArray,
-    getValues
-}: PostOrPatchType<PostPatchDiscountType, FetchRoomType>){
+    getValues,
+    checkArray,
+    hotelId
+}: DiscountInputProps){
 
     const [stayDateDiscount, setStayDateDiscount] = useState<boolean>(true)
     const [hotelDiscount, setHotelDiscount] = useState<boolean>(true)
@@ -27,7 +37,20 @@ export function DiscountInputs({
                 extraClasses=""
                 label="Enter discount title"
                 register={register("name", {
-                    required: "Discount name is required"
+                    required: "Discount name is required",
+
+                    validate: (value) => {
+                        if(!value) return true 
+
+                        return validateNameWithId({
+                            id: hotelId,
+                            name: value,
+                            checkArray: checkArray ?? [],
+                            idKey: "hotel_id",
+                            instanceCat: "Hotel",
+                            catTitle: "Deal Name"
+                        })
+                    }
                 })}
                 error={errors.name}
             />

@@ -24,6 +24,7 @@ export function AdminHotel(){
             {addHotel &&
                 <PostHotel 
                     onClose={() => setAddHotel(false)}
+                    hotelArray={hotels}
                 />
             }
         </section>

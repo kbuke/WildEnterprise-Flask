@@ -1,18 +1,25 @@
 import { useForm } from "react-hook-form";
 import { useFetchSpecificRoom } from "../../../../Hooks/RoomHooks/useFetchSpecificRoom";
 import type { PatchDeleteCloseType } from "../../../../Types/PatchDeleteCloseType";
-import type { PostRoomType } from "../../../../Types/RoomTypes";
-import { usePatchRoom } from "../../../../Hooks/RoomHooks/usePatchRoom";
+import type { FetchRoomType, PostRoomType } from "../../../../Types/RoomTypes";
 import { PopUp } from "../../../../Components/PopUp";
 import { Forms } from "../../../../Components/Forms";
 import { RoomInputs } from "./RoomInputs";
 import { useEffect } from "react";
+import { usePatchInstance } from "../../../../Hooks/GeneralHooks/usePatchInstance";
+
+type PatchRoomPropTypes = {
+    hotelId: number,
+    hotelRooms: FetchRoomType[] 
+} & PatchDeleteCloseType
 
 export function PatchRoom({
     onClose,
     name,
-    id
-}: PatchDeleteCloseType) {
+    id,
+    hotelId,
+    hotelRooms
+}: PatchRoomPropTypes) {
 
     const { room: specificRoom } = useFetchSpecificRoom(id)
 
@@ -20,7 +27,8 @@ export function PatchRoom({
         register,
         handleSubmit,
         reset,
-        formState: { errors }
+        formState: { errors },
+        getValues
     } = useForm<PostRoomType>()
 
     useEffect(() => {
@@ -35,11 +43,20 @@ export function PatchRoom({
         }
     }, [specificRoom, reset])
 
-    const { mutate, isPending } = usePatchRoom(id)
+    const { mutate, isPending } = usePatchInstance<PostRoomType>()
+
 
     const onSubmit = (formData: PostRoomType) => {
-        mutate(formData, {
-            onSuccess: () => onClose()
+        mutate({
+            endpoint: `/rooms/${id}`,
+            values: formData,
+            queryKeys: [
+                ["hotels"]
+            ]
+        }, {
+            onSuccess: () => {
+                onClose()
+            }
         })
     }
 
@@ -55,6 +72,9 @@ export function PatchRoom({
                             postOrPatch="Patch"
                             register={register}
                             errors={errors}
+                            getValues={getValues}
+                            hotelId={hotelId}
+                            checkArray={hotelRooms}
                         />
                     }
                     submitButtonTitle="Edit Room"

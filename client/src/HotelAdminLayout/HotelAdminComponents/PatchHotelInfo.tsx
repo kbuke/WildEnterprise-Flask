@@ -3,8 +3,9 @@ import type { PatchHotelType } from "../../Types/HotelTypes";
 import { useFetchSpecificHotel } from "../../Hooks/HotelHooks/useFetchSpecificHotel";
 import { PopUp } from "../../Components/PopUp";
 import { Forms } from "../../Components/Forms";
-import { usePatchHotel } from "../../Hooks/HotelHooks/usePatchHotel";
 import { HotelInputs } from "../../AdminLayout/AdminPages/AdminHotel/HotelInputs";
+import { usePatchInstance } from "../../Hooks/GeneralHooks/usePatchInstance";
+import { useEffect } from "react";
 
 type PatchHotelInfoType = {
     onClose: () => void,
@@ -22,23 +23,38 @@ export function PatchHotelInfo({
     const {
         register,
         handleSubmit,
+        reset,
         formState: {errors}
-    } = useForm<PatchHotelType>({
-        defaultValues: {
-            name: specificHotel?.name,
-            location: specificHotel?.location,
-            img: specificHotel?.img,
-            info: specificHotel?.info
-        }
-    })
+    } = useForm<PatchHotelType>()
 
-    const {mutate, isPending} = usePatchHotel(hotelId)
+    useEffect(() => {
+        if(specificHotel){
+            reset({
+                name: specificHotel.name,
+                img: specificHotel.img,
+                info: specificHotel.info,
+                location: specificHotel.location
+            })
+        }
+    }, [specificHotel, reset])
+
+    const {mutate, isPending} = usePatchInstance<PatchHotelType>()
 
     const onSubmit = (formData: PatchHotelType) => {
-        mutate(formData, {
-            onSuccess: () => onClose()
-        })
-    }
+        mutate({
+            endpoint: `hotels/${hotelId}`,
+            values: formData,
+            queryKeys: [
+                ["hotels", hotelId],
+                ["hotelAdminSession"]
+            ]
+        }, {
+            onSuccess: () => {
+                onClose();
+            }
+        });
+    };
+
 
     return(
         <PopUp 
@@ -50,6 +66,7 @@ export function PatchHotelInfo({
                     postOrPatch="Patch"
                     register={register}
                     errors={errors}
+                    currentId={hotelId}
                 />}
                 submitButtonTitle="Edit Hotel"
                 isPending={isPending}

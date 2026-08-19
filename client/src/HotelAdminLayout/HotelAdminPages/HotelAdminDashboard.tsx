@@ -23,6 +23,7 @@ export function HotelAdmonDashboard(){
         id,
         name, 
         slug,
+        img
     } = data
 
     const hotelEditablesObject = ({
@@ -69,7 +70,15 @@ export function HotelAdmonDashboard(){
         <div
             className="py-6 px-12"
         >
-            <h1>Welcome {name}</h1>
+            <img 
+                src={img}
+                className="h-50 w-50 rounded-full justify-self-center mb-10"
+            />
+            <h1
+                className="text-center mb-10 uppercase font-bold text-3xl"
+            >
+                Welcome {name}
+            </h1>
 
             <div
                 className="grid grid-cols-3 gap-10"

@@ -1,18 +1,23 @@
-import type { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form"
+import type { FieldErrors, UseFormRegister } from "react-hook-form"
 import { TextInputs } from "../../../Components/textInputs"
-import type { PatchHotelType, PostHotelType } from "../../../Types/HotelTypes"
+import type { FetchHotelsType, PatchHotelType, PostHotelType } from "../../../Types/HotelTypes"
 import { TextArea } from "../../../Components/TextArea"
+import { validateValueUniqueness } from "../../../FormErrors/validateValueUniqueness"
 
 type PostHotelInputType = {
     postOrPatch: "Post" | "Patch",
     register: UseFormRegister<PostHotelType | PatchHotelType>
     errors: FieldErrors<PostHotelType>
+    arrayCheck?: FetchHotelsType[]
+    currentId?: number
 }
 
 export function HotelInputs({
     postOrPatch,
     register,
-    errors
+    errors,
+    arrayCheck,
+    currentId
 }: PostHotelInputType){
     return(
         <>
@@ -22,7 +27,19 @@ export function HotelInputs({
                 extraClasses="border-b"
                 label="Enter hotel name:"
                 register={register("name", {
-                    required: "Hotel Name is required"
+                    required: "Hotel Name is required",
+
+                    validate: (value) => {
+                        if(!value) return
+
+                        return validateValueUniqueness({
+                            checkArray: arrayCheck ?? [],
+                            value: value,
+                            valueTitle: "Hotel",
+                            keyChecked: "name",
+                            excludeId: currentId
+                        })
+                    }
                 })}
                 error={errors.name}
             />
@@ -44,7 +61,19 @@ export function HotelInputs({
                 label="Please enter hotels image:"
                 extraClasses="border-b"
                 register={register("img", {
-                    required: "Hotel image is required"
+                    required: "Hotel image is required",
+
+                    validate: (value) => {
+                        if(!value) return 
+
+                        return validateValueUniqueness({
+                            checkArray: arrayCheck ?? [],
+                            value: value,
+                            valueTitle: "Hotel Image",
+                            keyChecked: "img",
+                            excludeId: currentId
+                        })
+                    }
                 })}
                 error={errors.img}
             />

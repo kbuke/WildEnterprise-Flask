@@ -1,6 +1,7 @@
 import type { FetchRoomType } from "./RoomTypes"
 
 export type FetchDiscountTypes = {
+    id: number,
     name: string,
     code?: string,
     percentage_off: number,
@@ -8,7 +9,7 @@ export type FetchDiscountTypes = {
     booking_end_date?: string,
     stay_start_date?: string,
     stay_end_date?: string,
-    hotel_Id: number,
+    hotel_id: number,
     room_id?: number
 }
 

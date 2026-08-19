@@ -1,19 +1,29 @@
 import { useForm } from "react-hook-form"
 import type { CancelRequestType } from "../../../../Types/CancelRequestType"
-import type { PostRoomType } from "../../../../Types/RoomTypes"
+import type { FetchRoomType, PostRoomType } from "../../../../Types/RoomTypes"
 import { PopUp } from "../../../../Components/PopUp"
 import { RoomInputs } from "./RoomInputs"
 import { Forms } from "../../../../Components/Forms"
 import { usePostInsatnce } from "../../../../Hooks/GeneralHooks/usePostInstance"
 
+type PostRoomPropTypes = {
+    hotelName: string,
+    onClose: () => void,
+    hotelId: number,
+    hotelRooms: FetchRoomType[]
+}
+
 export function PostRoom({
+    hotelName,
     onClose,
-    hotelId
-}: CancelRequestType & { hotelId: number }) {
+    hotelId,
+    hotelRooms
+}: PostRoomPropTypes) {
 
     const {
         register,
         handleSubmit,
+        getValues,
         formState: { errors }
     } = useForm<PostRoomType>({
         shouldUnregister: true
@@ -55,6 +65,9 @@ export function PostRoom({
                             postOrPatch="Post"
                             register={register}
                             errors={errors}
+                            checkArray={hotelRooms}
+                            hotelId={hotelId}
+                            getValues={getValues}
                         />
                     }
                     submitButtonTitle="Create New Room"

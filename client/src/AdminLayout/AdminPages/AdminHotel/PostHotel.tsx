@@ -1,14 +1,19 @@
 import { useForm } from "react-hook-form";
 import type { CancelRequestType } from "../../../Types/CancelRequestType";
-import type { PostHotelType } from "../../../Types/HotelTypes";
+import type { FetchHotelsType, PostHotelType } from "../../../Types/HotelTypes";
 import { PopUp } from "../../../Components/PopUp";
 import { Forms } from "../../../Components/Forms";
 import { HotelInputs } from "./HotelInputs";
 import { usePostHotel } from "../../../Hooks/HotelHooks/usePostHotel";
 
+type PostHotelProps = {
+    hotelArray: FetchHotelsType[]
+} & CancelRequestType
+
 export function PostHotel({
-    onClose
-}: CancelRequestType){
+    onClose,
+    hotelArray
+}: PostHotelProps){
     const {
         register,
         handleSubmit,
@@ -38,6 +43,7 @@ export function PostHotel({
                     postOrPatch={"Post"}
                     register={register}
                     errors={errors}
+                    arrayCheck={hotelArray}
                 />}
                 submitButtonTitle="Create New Hotel"
                 isPending = {isPending}

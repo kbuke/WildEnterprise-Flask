@@ -2,9 +2,13 @@ import { useState } from "react"
 import { FindHotel } from "../../HotelAdminComponents/FindHotel"
 import { PostDiscount } from "./PostDiscount"
 import { HotelDiscountTable } from "./HotelDiscountTable"
+import type { FetchDiscountTypes } from "../../../Types/DiscountTypes"
+import { PatchDiscount } from "./PatchDiscount"
+import { DeleteDiscount } from "./DeleteDiscount"
 
 export function HotelDiscounts(){
     const [discountAction, setDiscountAction] = useState<"Post" | "Patch" | "Delete" | null>()
+    const [selectedDiscount, setSelectedDiscount] = useState<FetchDiscountTypes | null>()
 
     const hotel = FindHotel()
 
@@ -17,12 +21,37 @@ export function HotelDiscounts(){
         <div
             className="py-12"
         >
-            {discountAction === "Post" &&
+            {discountAction === "Post" && hotelId && hotelRooms &&
                 <PostDiscount 
                     hotelName={hotelName!}
                     onClose={() => setDiscountAction(null)}
-                    hotelId={hotelId!}
-                    hotelRooms={hotelRooms!}
+                    hotelId={hotelId}
+                    hotelRooms={hotelRooms}
+                    discounts={discounts ?? []}
+                />
+            }
+
+            {discountAction === "Patch" && selectedDiscount && hotelId && hotelRooms && discounts &&
+                <PatchDiscount 
+                    chosenDiscount={selectedDiscount}
+                    hotelId={hotelId}
+                    onClose={() => {
+                        setDiscountAction(null)
+                        setSelectedDiscount(null)
+                    }}
+                    hotelRooms={hotelRooms}
+                    discounts={discounts}
+                />
+            }
+
+            {discountAction === "Delete" && selectedDiscount &&
+                <DeleteDiscount 
+                    onClose={() => {
+                        setDiscountAction(null)
+                        setSelectedDiscount(null)
+                    }}
+                    name={selectedDiscount.name}
+                    id={selectedDiscount.id}
                 />
             }
 
@@ -44,16 +73,21 @@ export function HotelDiscounts(){
                 </button>
             </div>
 
-            {discounts?.length == 0 && !discounts
-                ? <p
+
+            {discounts?.length && !discounts &&
+                <p
                     className="mt-4"
                 >
-                    No Discounts to display
+                    No discounts to display
                 </p>
+            }
 
-                : <HotelDiscountTable 
-                    discounts={discounts!}
-                    hotelName={hotelName!}
+            {discounts && hotelName && hotelId &&
+                <HotelDiscountTable 
+                    discounts={discounts}
+                    hotelName={hotelName}
+                    setDiscountAction={setDiscountAction}
+                    setSelectedDiscount={setSelectedDiscount}
                 />
             }
         </div>

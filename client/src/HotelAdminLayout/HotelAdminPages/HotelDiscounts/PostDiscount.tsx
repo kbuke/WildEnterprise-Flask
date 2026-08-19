@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form"
-import type { PostPatchDiscountType } from "../../../Types/DiscountTypes"
+import type { FetchDiscountTypes, PostPatchDiscountType } from "../../../Types/DiscountTypes"
 import { usePostInsatnce } from "../../../Hooks/GeneralHooks/usePostInstance"
 import { PopUp } from "../../../Components/PopUp"
 import { Forms } from "../../../Components/Forms"
@@ -11,6 +11,7 @@ type PostDiscountPropTypes = {
     onClose: () => void
     hotelId: number
     hotelRooms: FetchRoomType[]
+    discounts: FetchDiscountTypes[]
 }
 
 
@@ -18,10 +19,9 @@ export function PostDiscount({
     hotelName,
     onClose,
     hotelId,
-    hotelRooms
+    hotelRooms,
+    discounts
 }: PostDiscountPropTypes){
-
-    console.log(hotelRooms)
 
     const {
         register,
@@ -73,6 +73,8 @@ export function PostDiscount({
                             errors={errors}
                             dependantArray={hotelRooms}
                             getValues={getValues}
+                            checkArray={discounts}
+                            hotelId={hotelId}
                         />
                     }
                     submitButtonTitle="Create New Discount"

@@ -1,13 +1,26 @@
 import { TextInputs } from "../../../../Components/textInputs";
+import { validateNameWithId } from "../../../../FormErrors/validateNameWithId";
 import type { PostOrPatchType } from "../../../../Types/PostOrPatchType";
-import type { PostRoomType } from "../../../../Types/RoomTypes";
+import type { FetchRoomType, PostRoomType } from "../../../../Types/RoomTypes";
+import type { FieldValues } from "react-hook-form";
 
+type RoomInputProps = PostOrPatchType<
+    PostRoomType,
+    FieldValues,
+    FetchRoomType
+> & {
+    hotelId: number
+}
 
 export function RoomInputs({
     postOrPatch,
     register,
-    errors
-}: PostOrPatchType<PostRoomType>){
+    errors,
+    getValues,
+    checkArray,
+    hotelId
+}: RoomInputProps){
+    console.log(checkArray)
     return(
         <>
             <TextInputs 
@@ -16,7 +29,20 @@ export function RoomInputs({
                 extraClasses=""
                 label="Enter room name:"
                 register={register("name", {
-                    required: "Room name is required"
+                    required: "Room name is required",
+
+                    validate: (value) => {
+                        if(!value) return 
+
+                        return validateNameWithId({
+                            id: hotelId,
+                            name: value,
+                            checkArray: checkArray ?? [],
+                            idKey: "hotel_id",
+                            instanceCat: "Hotel",
+                            catTitle: "Room Type"
+                        })
+                    }
                 })}
                 error={errors.name}
             />

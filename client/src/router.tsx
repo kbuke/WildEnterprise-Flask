@@ -11,6 +11,7 @@ import { HotelAdmonDashboard } from "./HotelAdminLayout/HotelAdminPages/HotelAdm
 import { HotelAdminLayout } from "./HotelAdminLayout/HotelAdminLayout";
 import { HotelDiscounts } from "./HotelAdminLayout/HotelAdminPages/HotelDiscounts/HotelDiscounts";
 import { HotelRooms } from "./HotelAdminLayout/HotelAdminPages/HotelRooms/HotelRooms";
+import { HotelLeadTimes } from "./HotelAdminLayout/HotelAdminPages/HotelLeadTimes/HotelLeadTimes";
 
 export const router = createBrowserRouter([
     {
@@ -61,6 +62,11 @@ export const router = createBrowserRouter([
                             {
                                 path: "/:slug/rooms",
                                 element: <HotelRooms />
+                            },
+
+                            {
+                                path: "/:slug/leadtimes",
+                                element: <HotelLeadTimes />
                             }
                         ]
                     }

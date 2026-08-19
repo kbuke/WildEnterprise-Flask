@@ -61,7 +61,7 @@ export function HotelAdmonDashboard(){
             tag: "Lead Times",
             icon: "/leadTimes.png",
             info:"Set rates dependant on the time given before guests arrival",
-            link: "/hotelleadtimes"
+            link: `/${slug}/leadtimes`
         })
     ]
 

@@ -1,4 +1,5 @@
 import type { FetchDiscountTypes } from "./DiscountTypes"
+import type { FetchLeadTimeType } from "./LeadTimesType"
 import type { FetchRoomType } from "./RoomTypes"
 
 export type FetchHotelsType = {
@@ -11,7 +12,8 @@ export type FetchHotelsType = {
     email: string,
 
     discounts: FetchDiscountTypes[],
-    rooms: FetchRoomType[]
+    rooms: FetchRoomType[],
+    lead_times: FetchLeadTimeType[]
 }
 
 export type PostHotelType = {

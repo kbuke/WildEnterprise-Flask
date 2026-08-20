@@ -1,53 +1,162 @@
-from itertools import combinations_with_replacement
+# from models.HotelModels.RoomModel import RoomModel
+# from models.HotelModels.RoomBookingModel import get_booked_quantity
+# from functions.holds import get_active_hold_quantity
+# from functions.pricing import price_stay
 
-from models.HotelModels.RoomModel import RoomModel
-from models.HotelModels.RoomBookingModel import get_available_rooms
-from functions.pricing import price_stay
 
-def suggest_room_combinations(hotel_id, arrival_date, departure_date, party_size, max_rooms = 4):
-    rooms = RoomModel.query.filter_by(hotel_id=hotel_id).all()
+# def suggest_room_combinations(
+#     hotel_id,
+#     arrival,
+#     departure,
+#     party_size
+# ):
 
-    options = []
+#     rooms = RoomModel.query.filter_by(
+#         hotel_id=hotel_id
+#     ).all()
 
-    for room in rooms:
-        available = get_available_rooms(room.id, arrival_date, departure_date)
-        if available > 0:
-            options.append((room, available))
+#     available_rooms = []
 
-    if not options:
-        return []
+#     for room in rooms:
 
-    lookup = {r.id: (r, avail) for r, avail in options}
-    room_ids = [r.id for r, _ in options]
+#         booked = get_booked_quantity(
+#             room.id,
+#             arrival,
+#             departure
+#         )
 
-    valid_combos = []
-    for size in range(1, max_rooms + 1):
-        for combo in combinations_with_replacement(room_ids, size):
-            counts = {}
-            for rid in combo:
-                counts[rid] = counts.get(rid, 0) + 1
+#         held = get_active_hold_quantity(
+#             room.id,
+#             arrival,
+#             departure
+#         )
 
-            if any(counts[rid] > lookup[rid][1] for rid in counts):
-                continue # state there is not enough of this room type available 
+#         available = (
+#             room.no_of_rooms
+#             - booked
+#             - held
+#         )
 
-            total_capacity = sum(lookup[rid][0].max_people * qty for rid, qty in counts.items())
-            if total_capacity < party_size:
-                continue 
+#         if available <= 0:
+#             continue
 
-            total_price = sum(
-                price_stay(lookup[rid][0], arrival_date, departure_date) * qty
-                for rid, qty in counts.items()
-            )
+#         available_rooms.append({
+#             "room": room,
+#             "available": available
+#         })
 
-            valid_combos.append({
-                "rooms": [
-                    {"room": lookup[rid][0].to_dict(), "quantity": qty}
-                    for rid, qty in counts.items()
-                ],
-                "total_capacity": total_capacity,
-                "total_price": round(total_price, 2)
-            })
-        if valid_combos:
-            break # stop growing combo size once smallest valid size is found 
-    valid_combos.sort(key = lambda c: (c["total_price"], c["total_capacity"] - party_size))
-    return valid_combos[:5]
+#     combinations = []
+
+#     def generate_combinations(
+#         index,
+#         selected_rooms,
+#         total_capacity
+#     ):
+
+#         # -------------------------
+#         # We have enough capacity
+#         # -------------------------
+
+#         if total_capacity >= party_size:
+
+#             total_price = 0
+
+#             for selected in selected_rooms:
+
+#                 room = selected["room"]
+#                 quantity = selected["quantity"]
+
+#                 total_price += (
+#                     price_stay(
+#                         room,
+#                         arrival,
+#                         departure
+#                     )
+#                     * quantity
+#                 )
+
+#             # combinations.append({
+#             #     "rooms": selected_rooms.copy(),
+#             #     "total_capacity": total_capacity,
+#             #     "total_price": total_price
+#             # })
+
+#             combinations.append({
+#                 "rooms": [
+#                     {
+#                         "room": selected["room"].to_dict(),
+#                         "quantity": selected["quantity"]
+#                     }
+#                     for selected in selected_rooms
+#                 ],
+#                 "total_capacity": total_capacity,
+#                 "total_price": total_price
+#             })
+
+#             return
+
+#         # -------------------------
+#         # No more room types
+#         # -------------------------
+
+#         if index >= len(available_rooms):
+#             return
+
+#         room_data = available_rooms[index]
+
+#         room = room_data["room"]
+#         available = room_data["available"]
+
+#         # -------------------------
+#         # Try every quantity
+#         # -------------------------
+
+#         for quantity in range(available + 1):
+
+#             new_capacity = (
+#                 total_capacity
+#                 + room.max_people * quantity
+#             )
+
+#             if quantity > 0:
+
+#                 # selected_rooms.append({
+#                 #     "room": room.to_dict(),
+#                 #     "quantity": quantity
+#                 # })
+#                 selected_rooms.append({
+#                     "room": room,
+#                     "quantity": quantity
+#                 })
+
+#             generate_combinations(
+#                 index + 1,
+#                 selected_rooms,
+#                 new_capacity
+#             )
+
+#             if quantity > 0:
+#                 selected_rooms.pop()
+
+#     generate_combinations(
+#         index=0,
+#         selected_rooms=[],
+#         total_capacity=0
+#     )
+
+#     # --------------------------------
+#     # Don't return inefficient options
+#     # --------------------------------
+
+#     if not combinations:
+#         return []
+
+#     combinations.sort(
+#         key=lambda combination: (
+#             combination["total_capacity"],
+#             combination["total_price"]
+#         )
+#     )
+
+#     return combinations
+

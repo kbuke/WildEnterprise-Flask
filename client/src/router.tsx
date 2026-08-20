@@ -12,14 +12,20 @@ import { HotelAdminLayout } from "./HotelAdminLayout/HotelAdminLayout";
 import { HotelDiscounts } from "./HotelAdminLayout/HotelAdminPages/HotelDiscounts/HotelDiscounts";
 import { HotelRooms } from "./HotelAdminLayout/HotelAdminPages/HotelRooms/HotelRooms";
 import { HotelLeadTimes } from "./HotelAdminLayout/HotelAdminPages/HotelLeadTimes/HotelLeadTimes";
+import { HotelPg } from "./WebsiteLayout/HotelPg/HotelPg";
+import { WebsiteLayout } from "./WebsiteLayout/WebsiteLayout";
+import { ConfirmBookingPg } from "./WebsiteLayout/ConfirmBookingPg/ConfirmBooking";
 
 export const router = createBrowserRouter([
     {
         path: "/",
         element: <App />,
         children: [
+            // Login for hotel-admin and website-admin
             {path: "/adminlogin", element: <AdminLoginPg />},
             {path: "/hoteladminlogin", element: <HotelAdminLoginPg />},
+
+            // Admin Pages
             {
                 element: <ProtectedAdminRoute 
                     type="Admin"
@@ -41,6 +47,8 @@ export const router = createBrowserRouter([
                     }
                 ]
             },
+
+            // Hotel Admin Pages
             {
                 element: <ProtectedAdminRoute 
                     type="Hotel"
@@ -69,6 +77,22 @@ export const router = createBrowserRouter([
                                 element: <HotelLeadTimes />
                             }
                         ]
+                    }
+                ]
+            },
+
+            // Website Pages
+            {
+                element: <WebsiteLayout />,
+                children: [
+                    {
+                        path: "/:slug/:id",
+                        element: <HotelPg />
+                    },
+
+                    {
+                        path: "/:bookingRef/confirmbooking",
+                        element: <ConfirmBookingPg />
                     }
                 ]
             }

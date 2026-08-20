@@ -26,6 +26,8 @@ export function HotelAdmonDashboard(){
         img
     } = data
 
+    console.log(data)
+
     const hotelEditablesObject = ({
         tag,
         icon,

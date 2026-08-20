@@ -4,13 +4,14 @@ import type { MutationVariables } from "../../Types/MutationTypes";
 import { postInstance } from "../../Requests/postInstance";
 import { queryClient } from "../../ReactQuery/queryClient";
 
-export function usePostInsatnce<T>(){
+export function usePostInsatnce<TRequest, TResponse = CrudRequestMessageType>() {
     return useMutation<
-        CrudRequestMessageType,
+        TResponse,
         Error,
-        MutationVariables<T>
+        MutationVariables<TRequest>
     >({
-        mutationFn: ({endpoint, values}) => postInstance(endpoint, values),
+        mutationFn: ({ endpoint, values }) =>
+            postInstance<TRequest, TResponse>(endpoint, values),
 
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
@@ -19,3 +20,19 @@ export function usePostInsatnce<T>(){
         }
     })
 }
+
+// export function usePostInsatnce<T>(){
+//     return useMutation<
+//         CrudRequestMessageType,
+//         Error,
+//         MutationVariables<T>
+//     >({
+//         mutationFn: ({endpoint, values}) => postInstance(endpoint, values),
+
+//         onSuccess: (_, variables) => {
+//             queryClient.invalidateQueries({
+//                 queryKey: variables.queryKey
+//             })
+//         }
+//     })
+// }

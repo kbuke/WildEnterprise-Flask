@@ -24,3 +24,15 @@ export type PostRoomType = {
     basePrice: string,
     hotelId?: number,
 }
+
+export type RoomAvailabilityType = {
+    room: FetchRoomType,
+    available: number,
+    contested: boolean,
+    price_per_room: number,
+    total_price: number
+}
+
+export type AvailabilityResponseType = {
+    rooms: RoomAvailabilityType[]
+}

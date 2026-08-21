@@ -12,7 +12,7 @@ from functions import validate_email
 
 from datetime import date, timedelta
 
-from relational_functions.one_to_many import one_to_many_back_populates
+from relational_functions.one_to_many import one_to_many_back_populates, one_to_many_fk
 
 from functions.validate_email import validate_email
 
@@ -35,15 +35,23 @@ class BookingModel(db.Model, SerializerMixin):
     booking_ref = db.Column(db.String, unique=True, nullable=False,
                              default=lambda: f"WE-{uuid.uuid4().hex[:8].upper()}")
     name = db.Column(db.String, nullable=False)
+    guests = db.Column(db.Integer, nullable = False)
     email = db.Column(db.String, nullable=False)
     arrival_date = db.Column(db.Date, nullable=False)
     departure_date = db.Column(db.Date, nullable=False)
     date_of_deposit_charge = db.Column(db.Date, nullable=False, default=calculate_deposit_date)
     date_of_remainder_charge = db.Column(db.Date, nullable=False, default=calculate_remainder_date)
+    hotel_id = one_to_many_fk("hotels")
+    hotel = one_to_many_back_populates("HotelModel", "bookings", False)
 
     room_bookings = one_to_many_back_populates("RoomBookingModel", "booking")
 
-    serialize_rules = serialize_relations("room_bookings", ["booking", "room"])
+
+
+    serialize_rules = ( 
+        serialize_relations("room_bookings", ["booking", "room"]) +
+        serialize_relations("hotel", ["rooms", "discounts", "lead_times", "reviews", "bookings",])
+    )
 
     @validates("email")
     def validate_email(self, key, value):
@@ -57,4 +65,10 @@ class BookingModel(db.Model, SerializerMixin):
         elif key == "departure_date":
             if self.arrival_date and value <= self.arrival_date:
                 raise ValueError("Departure date must be after arrival date")
+        return value
+
+    @validates("guests")
+    def valudate_guests(self, key, value):
+        if value < 1:
+            raise ValueError("There must be at least one guest")
         return value

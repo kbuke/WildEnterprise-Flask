@@ -25,12 +25,14 @@ class HotelModel(db.Model, SerializerMixin):
     discounts = one_to_many_back_populates("DiscountModel", "hotel")
     lead_times = one_to_many_back_populates("LeadTimeRuleModel", "hotel")
     reviews = one_to_many_back_populates("ReviewModel", "hotel")
+    bookings = one_to_many_back_populates("BookingModel", "hotel", False)
 
     serialize_rules = (
         serialize_relations("_password_hash") +
         serialize_relations("rooms", ["hotel", "discounts", "lead_times"]) +
         serialize_relations("discounts", ["hotel", "room"]) +
-        serialize_relations("lead_times", ["hotel", "room"])
+        serialize_relations("lead_times", ["hotel", "room"]) +
+        serialize_relations("bookings", ["hotel",])
     )
 
     @validates("slug")

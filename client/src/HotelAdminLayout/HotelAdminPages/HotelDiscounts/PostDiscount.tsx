@@ -51,7 +51,9 @@ export function PostDiscount({
                 bookingEnd: formData.bookingEnd || null,
                 hotelId: hotelId
             },
-            queryKey: ["hotels", formData.hotelId]
+            queryKeys: [
+                ["hotels", hotelId],
+            ]
         }, {
             onSuccess: () => {
                 onClose()

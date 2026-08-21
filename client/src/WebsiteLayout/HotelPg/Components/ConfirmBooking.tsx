@@ -9,18 +9,20 @@ type ConfirmBookingProps = {
     arrivalDate: string,
     departureDate: string,
     hotelName: string,
-    guests: number,
+    partySize: number,
     totalPrice: number,
-    selectedRooms: Record<number, number>
+    selectedRooms: Record<number, number>,
+    hotelId: number
 }
 
 export function ConfirmBooking({
     arrivalDate,
     departureDate,
     hotelName,
-    guests,
+    partySize,
     totalPrice,
-    selectedRooms
+    selectedRooms,
+    hotelId
 }: ConfirmBookingProps){
 
     const navigate = useNavigate()
@@ -60,11 +62,15 @@ export function ConfirmBooking({
             endpoint: "bookings/create",
             values: {
                 ...formData,
+                hotelId,
                 arrivalDate,
                 departureDate,
-                rooms
+                rooms,
+                partySize
             },
-            queryKey: ["bookings"]
+            queryKeys: [
+                ["bookings"]
+            ]
         }, {
             onSuccess: (data) => {
                 navigate(`/${data.booking_ref}/confirmbooking`)
@@ -77,68 +83,75 @@ export function ConfirmBooking({
             className="bg-white rounded-lg h-[90%] w-[60%] self-center p-12"
             onSubmit={handleSubmit(onSubmit)}
         >
-            {isPending &&
-                <LoadingIcon />
+            {isPending 
+                ? <div>
+                    <LoadingIcon />
+                    <p>Confirming Booking...</p>
+                </div>
+
+                : <>
+            
+                    <h1>Confirm Booking for {hotelName}</h1>
+
+                    <p>
+                        <span className="font-bold">Arrival: </span> {arrivalDate}
+                    </p>
+
+                    <p>
+                        <span className="font-bold">Departure: </span> {departureDate}
+                    </p>
+
+                    <p>
+                        <span className="font-bold">{partySize} </span> Guests
+                    </p>
+
+                    <p
+                        className="mb-10"
+                    >
+                        Total Price: <span className="font-bold">ZAR {totalPrice}</span>
+                    </p>
+
+                    <TextInputs 
+                        textType="text"
+                        placeholder="Please enter your name"
+                        extraClasses=""
+                        register={register("name", {
+                            required: "Please enter a value"
+                        })}
+                        label="Please enter your name"
+                        error={errors.name}
+                    />
+
+                    <TextInputs 
+                        textType="email"
+                        placeholder="Please enter your email"
+                        extraClasses=""
+                        register={register("email", {
+                            required: "Please enter a value"
+                        })}
+                        label="Please enter your email"
+                        error={errors.email}
+                    />
+
+                    <div
+                        className="flex gap-10"
+                    >
+                        <button
+                            className="submitFormButton"
+                            type="submit"
+                        >
+                            Make Booking
+                        </button>
+
+                        <button
+                            className="redButton"
+                            type="button"
+                        >
+                            Cancel Booking
+                        </button>
+                    </div>
+                </>
             }
-            <h1>Confirm Booking for {hotelName}</h1>
-
-            <p>
-                <span className="font-bold">Arrival: </span> {arrivalDate}
-            </p>
-
-            <p>
-                <span className="font-bold">Departure: </span> {departureDate}
-            </p>
-
-            <p>
-                <span className="font-bold">{guests} </span> Guests
-            </p>
-
-            <p
-                className="mb-10"
-            >
-                Total Price: <span className="font-bold">ZAR {totalPrice}</span>
-            </p>
-
-            <TextInputs 
-                textType="text"
-                placeholder="Please enter your name"
-                extraClasses=""
-                register={register("name", {
-                    required: "Please enter a value"
-                })}
-                label="Please enter your name"
-                error={errors.name}
-            />
-
-            <TextInputs 
-                textType="email"
-                placeholder="Please enter your email"
-                extraClasses=""
-                register={register("email", {
-                    required: "Please enter a value"
-                })}
-                label="Please enter your email"
-                error={errors.email}
-            />
-
-            <div
-                className="flex gap-10"
-            >
-                <button
-                    className="submitFormButton"
-                    type="submit"
-                >
-                    Make Booking
-                </button>
-
-                <button
-                    className="redButton"
-                    type="button"
-                >
-                    Cancel Booking
-                </button>
-            </div>
         </form>
     )
 }

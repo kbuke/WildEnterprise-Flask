@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import { LoadingIcon } from "../../Components/LoadingIcon"
 import { useCheckHotelAdminSession } from "../../Hooks/HotelHooks/useCheckHotelAdminSession"
+import { HotelBookingTable } from "./HotelBookingTable"
 
 type HotelEditableObjectType = {
     tag: string,
@@ -23,7 +24,8 @@ export function HotelAdmonDashboard(){
         id,
         name, 
         slug,
-        img
+        img,
+        bookings
     } = data
 
     console.log(data)
@@ -117,6 +119,17 @@ export function HotelAdmonDashboard(){
                     )
                 })}
             </div>
+
+            {bookings.length > 0 &&
+                <HotelBookingTable 
+                    name={name}
+                    bookings={bookings}
+                />
+            }
+
+            {bookings.length === 0 && 
+                <p>No Bookings to Display</p>
+            }
         </div>
     )
 }

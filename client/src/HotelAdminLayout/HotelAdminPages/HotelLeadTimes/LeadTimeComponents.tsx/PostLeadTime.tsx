@@ -42,7 +42,9 @@ export function PostLeadTime({
                 ...formData,
                 maxDays: formData.maxDays || null
             },
-            queryKey: ["hotels", formData.hotelId]
+            queryKeys: [
+                ["hotels", hotelId]
+            ]
         }, {
             onSuccess: () => {
                 onClose()

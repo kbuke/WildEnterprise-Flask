@@ -16,6 +16,7 @@ from functions.pricing import price_stay
 from datetime import date
 
 from functions.confirmation_email import send_guest_confirmation, send_hotel_notification
+from functions.get_hotel_available_capacity import get_hotel_available_capacity
 
 
 class AllBookings(BaseResource):
@@ -39,74 +40,188 @@ class CreateBooking(Resource):
         if not data:
             return {"error": "Missing JSON data"}, 400
 
-        required = ["name", "email", "arrivalDate", "departureDate", "rooms"]
-        missing = [f for f in required if f not in data]
+        required = [
+            "name",
+            "email",
+            "hotelId",
+            "arrivalDate",
+            "departureDate",
+            "rooms",
+            "partySize"
+        ]
+
+        missing = [field for field in required if field not in data]
+
         if missing:
-            return {"error": f"Missing fields: {', '.join(missing)}"}, 400
+            return {
+                "error": f"Missing fields: {', '.join(missing)}"
+            }, 400
+
+        # -------------------------
+        # Validate party size
+        # -------------------------
+
+        try:
+            party_size = int(data["partySize"])
+        except (ValueError, TypeError):
+            return {
+                "error": "partySize must be a number"
+            }, 400
+
+        if party_size < 1:
+            return {
+                "error": "There must be at least one guest"
+            }, 400
+
+        # -------------------------
+        # Validate dates
+        # -------------------------
 
         try:
             arrival = date.fromisoformat(data["arrivalDate"])
             departure = date.fromisoformat(data["departureDate"])
         except ValueError:
-            return {"error": "Dates must be in YYYY-MM-DD format"}, 400
+            return {
+                "error": "Dates must be in YYYY-MM-DD format"
+            }, 400
 
         if departure <= arrival:
-            return {"error": "departure_date must be after arrival_date"}, 400
+            return {
+                "error": "departure_date must be after arrival_date"
+            }, 400
+
+        # -------------------------
+        # Validate rooms
+        # -------------------------
 
         requested_rooms = data["rooms"]
+
         if not requested_rooms:
-            return {"error": "At least one room must be selected"}, 400
+            return {
+                "error": "At least one room must be selected"
+            }, 400
 
         errors = []
         rooms_cache = {}
+        selected_capacity = 0
+
         for entry in requested_rooms:
+
             room = RoomModel.query.get(entry["room_id"])
+
             if not room:
-                errors.append(f"Room {entry['room_id']} does not exist")
+                errors.append(
+                    f"Room {entry['room_id']} does not exist"
+                )
                 continue
 
-            available = get_available_rooms(room.id, arrival, departure)
+            available = get_available_rooms(
+                room.id,
+                arrival,
+                departure
+            )
+
             if available < entry["quantity"]:
                 errors.append(
-                    f"Only {available} of '{room.name}' available for those dates "
+                    f"Only {available} of '{room.name}' "
+                    f"available for those dates "
                     f"(requested {entry['quantity']})"
                 )
+
             rooms_cache[room.id] = room
 
+            selected_capacity += (
+                room.max_people * entry["quantity"]
+            )
+
+        # Stop if any room validation failed
         if errors:
-            return {"error": errors}, 400
+            return {
+                "error": errors
+            }, 400
+
+        # -------------------------
+        # Check selected room capacity
+        # -------------------------
+
+        if selected_capacity < party_size:
+            return {
+                "error": (
+                    f"The selected rooms can accommodate "
+                    f"{selected_capacity} guests, "
+                    f"but your party has {party_size} guests."
+                )
+            }, 400
+
+        # -------------------------
+        # Check total hotel capacity
+        # -------------------------
+
+        available_capacity = get_hotel_available_capacity(
+            data["hotelId"],
+            arrival,
+            departure
+        )
+
+        if party_size > available_capacity:
+            return {
+                "error": (
+                    f"This hotel can accommodate a maximum of "
+                    f"{available_capacity} guests for these dates."
+                )
+            }, 400
+
+        # -------------------------
+        # Create booking
+        # -------------------------
 
         try:
             booking = BookingModel(
                 name=data["name"],
                 email=data["email"],
+                hotel_id=data["hotelId"],
                 arrival_date=arrival,
-                departure_date=departure
+                departure_date=departure,
+                guests=party_size
             )
+
             db.session.add(booking)
             db.session.flush()
 
             for entry in requested_rooms:
+
                 room = rooms_cache[entry["room_id"]]
-                unit_price = price_stay(room, arrival, departure)
-                db.session.add(RoomBookingModel(
-                    room_id=room.id,
-                    booking_id=booking.id,
-                    quantity=entry["quantity"],
-                    unit_price=unit_price,
-                    price_locked=unit_price * entry["quantity"]
-                ))
+
+                unit_price = price_stay(
+                    room,
+                    arrival,
+                    departure
+                )
+
+                db.session.add(
+                    RoomBookingModel(
+                        room_id=room.id,
+                        booking_id=booking.id,
+                        quantity=entry["quantity"],
+                        unit_price=unit_price,
+                        price_locked=unit_price * entry["quantity"]
+                    )
+                )
 
             db.session.commit()
 
             send_guest_confirmation(booking)
             send_hotel_notification(booking)
-            
+
             return booking.to_dict(), 201
 
         except (ValueError, IntegrityError) as e:
+
             db.session.rollback()
-            return {"error": [str(e)]}, 400
+
+            return {
+                "error": [str(e)]
+            }, 400
 
 
 class SpecificBookings(BaseResource):

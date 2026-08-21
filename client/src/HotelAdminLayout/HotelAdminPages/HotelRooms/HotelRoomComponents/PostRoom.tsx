@@ -44,7 +44,11 @@ export function PostRoom({
                 ...formData,
                 hotelId: hotelId
             },
-            queryKey: ["hotels", formData.hotelId]
+            queryKeys: [
+                ["hotels", hotelId],
+                // ["hotelAdminSession"]
+            ]
+                // ["hotels", formData.hotelId]
         }, {
             onSuccess: () => {
                 onClose()

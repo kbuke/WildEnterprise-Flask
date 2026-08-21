@@ -1,3 +1,4 @@
+import type { CreatedBookingType } from "./BookingTypes"
 import type { FetchDiscountTypes } from "./DiscountTypes"
 import type { FetchLeadTimeType } from "./LeadTimesType"
 import type { FetchRoomType } from "./RoomTypes"
@@ -13,7 +14,8 @@ export type FetchHotelsType = {
 
     discounts: FetchDiscountTypes[],
     rooms: FetchRoomType[],
-    lead_times: FetchLeadTimeType[]
+    lead_times: FetchLeadTimeType[],
+    bookings: CreatedBookingType[]
 }
 
 export type PostHotelType = {

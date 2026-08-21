@@ -8,6 +8,7 @@ import { useAvailability } from "../../Hooks/GeneralHooks/useAvailability"
 import { NumberRoomSelector } from "./Components/NumberRoomSelector"
 import { ConfirmBooking } from "./Components/ConfirmBooking"
 import { PopUp } from "../../Components/PopUp"
+import { validateDateRange } from "../../FormErrors/validateDateRange"
 
 type AvailabilityFormType = {
     arrivalDate: string
@@ -33,7 +34,8 @@ export function HotelPg(){
     const {
         register,
         handleSubmit,
-        watch
+        watch,
+        formState: {errors}
     } = useForm<AvailabilityFormType>()
 
     const [searchParams, setSearchParams] =
@@ -97,7 +99,28 @@ export function HotelPg(){
     const departureDate = watch("departureDate")
     const guests = watch("partySize")
 
+    console.log("availability", availability)
+
     console.log(`Arrival Date: ${arrivalDate} to Departure Date ${departureDate}`)
+
+    const totalAvailableCapacity = useMemo(() => {
+        if(!availability){
+            return 0
+        }
+
+        return availability.rooms.reduce(
+            (total, roomAvailability) => 
+                total + roomAvailability.available * roomAvailability.room.max_people,
+                0
+        )
+    }, [availability])
+
+    const partySize = Number(guests)
+    const notEnoughCapacity = 
+        availability !== undefined &&
+        availability !== null &&
+        partySize > 0 &&
+        partySize > totalAvailableCapacity
 
     return(
         <section>
@@ -108,9 +131,10 @@ export function HotelPg(){
                             arrivalDate={arrivalDate}
                             departureDate={departureDate}
                             hotelName={selectedHotel?.name}
-                            guests={guests}
+                            partySize={guests}
                             totalPrice={totalRoomPrice}
                             selectedRooms = {selectedRooms}
+                            hotelId={hotelId}
                         />
                     }
                 />
@@ -133,18 +157,39 @@ export function HotelPg(){
                     label="Arrival Date"
                     extraClasses=""
                     register={register("arrivalDate", {
-                        required: "Arrival date is required"
+                        required: "Arrival date is required",
+
+                        validate: (value) => {
+                            if(!value) return 
+
+                            return validateDateRange({
+                                startDate: value
+                            })
+                        }
                     })}
                     inputType="Start Date"
+                    error={errors.arrivalDate}
                 />
 
                 <DateInputs
                     label="Departure Date"
                     extraClasses=""
                     register={register("departureDate", {
-                        required: "Departure date is required"
+                        required: "Departure date is required",
+
+                        validate: (value) => {
+                            const arrivalDate = watch("arrivalDate")
+
+                            if(!value || !arrivalDate) return 
+
+                            return validateDateRange({
+                                startDate: arrivalDate,
+                                endDate: value
+                            })
+                        }
                     })}
                     inputType="End Date"
+                    error={errors.departureDate}
                 />
 
                 <TextInputs
@@ -173,7 +218,7 @@ export function HotelPg(){
                 <p>Unable to check availability.</p>
             }
 
-            {availability &&
+            {availability && availability.rooms.length > 0 && !notEnoughCapacity &&
                 <div
                     className="px-12 flex flex-col"
                 >
@@ -289,6 +334,29 @@ export function HotelPg(){
                     </div>
 
                 </div>
+            }
+
+            {availability && availability.rooms.length === 0 &&
+                <p>
+                    No rooms available
+                </p>
+            }
+
+            {availability && notEnoughCapacity &&
+                <p className="px-12 mt-4 font-bold">
+                    Sorry, this hotel can only accommodate {totalAvailableCapacity} guests
+                    for these dates — not enough room for a party of {partySize}.
+                </p>
+            }
+
+            {availability && !notEnoughCapacity && availability.rooms.length > 0 &&
+                <div className="px-12 flex flex-col">
+                    {/* ...existing room list... */}
+                </div>
+            }
+
+            {availability && !notEnoughCapacity && availability.rooms.length === 0 &&
+                <p>No rooms available</p>
             }
 
         </section>

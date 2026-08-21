@@ -9,7 +9,8 @@ type RoomInputProps = PostOrPatchType<
     FieldValues,
     FetchRoomType
 > & {
-    hotelId: number
+    hotelId: number,
+    roomId: number
 }
 
 export function RoomInputs({
@@ -18,7 +19,8 @@ export function RoomInputs({
     errors,
     getValues,
     checkArray,
-    hotelId
+    hotelId,
+    roomId
 }: RoomInputProps){
     console.log(checkArray)
     return(

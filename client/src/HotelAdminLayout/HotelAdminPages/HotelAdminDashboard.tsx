@@ -120,14 +120,14 @@ export function HotelAdmonDashboard(){
                 })}
             </div>
 
-            {bookings.length > 0 &&
+            {bookings?.length > 0 &&
                 <HotelBookingTable 
                     name={name}
                     bookings={bookings}
                 />
             }
 
-            {bookings.length === 0 && 
+            {bookings?.length === 0 && 
                 <p>No Bookings to Display</p>
             }
         </div>

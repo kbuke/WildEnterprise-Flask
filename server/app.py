@@ -13,6 +13,11 @@ from resources.Availability import SearchAvailability
 from resources.RoomHold import CreateHold
 from resources.Review import AllReviews, SpecificReviews
 
+from resources.Sites import AllSites, SpecificSite
+from resources.Events import AllEvents, SpecificEvent
+
+from resources.EventBooking import AllEventBookings, PostEventBooking
+
 api.add_resource(AllHotels, "/hotels")
 api.add_resource(SpecificHotel, "/hotels/<int:id>")
 api.add_resource(HotelChageCredentials, "/hotelcredentials/<int:id>")
@@ -51,6 +56,15 @@ api.add_resource(CreateHold, "/holds")
 
 api.add_resource(AllReviews, "/reviews")
 api.add_resource(SpecificReviews, "/reviews/<int:id>")
+
+api.add_resource(AllEvents, "/events")
+api.add_resource(SpecificEvent, "/events/<int:id>")
+
+api.add_resource(AllSites, "/sites")
+api.add_resource(SpecificSite, "/sites/<int:id>")
+
+api.add_resource(AllEventBookings, "/eventbookings")
+api.add_resource(PostEventBooking, "/eventbookings/create")
 
 if __name__ == "__main__":
     app.run(port = 5555, debug = True)

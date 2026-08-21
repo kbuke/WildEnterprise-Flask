@@ -1,8 +1,8 @@
 """new test
 
-Revision ID: 9e8c5eae5d2c
+Revision ID: f7b0c6376ae2
 Revises: 
-Create Date: 2026-08-20 14:56:53.657474
+Create Date: 2026-08-21 15:54:08.038194
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9e8c5eae5d2c'
+revision = 'f7b0c6376ae2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,6 +33,13 @@ def upgrade():
     sa.UniqueConstraint('name'),
     sa.UniqueConstraint('slug')
     )
+    op.create_table('sites',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('img', sa.String(), nullable=False),
+    sa.Column('info', sa.String(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('bookings',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('booking_ref', sa.String(), nullable=False),
@@ -47,6 +54,16 @@ def upgrade():
     sa.ForeignKeyConstraint(['hotel_id'], ['hotels.id'], name=op.f('fk_bookings_hotel_id_hotels')),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('booking_ref')
+    )
+    op.create_table('events',
+    sa.Column('site_id', sa.Integer(), nullable=True),
+    sa.Column('no_of_tickets', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('img', sa.String(), nullable=False),
+    sa.Column('info', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['site_id'], ['sites.id'], name=op.f('fk_events_site_id_sites')),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('rooms',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -75,6 +92,17 @@ def upgrade():
     sa.ForeignKeyConstraint(['room_id'], ['rooms.id'], name=op.f('fk_discounts_room_id_rooms')),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('code')
+    )
+    op.create_table('event_bookings',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('booking_ref', sa.String(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('email', sa.String(), nullable=False),
+    sa.Column('no_of_people', sa.Integer(), nullable=False),
+    sa.Column('event_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['event_id'], ['events.id'], name=op.f('fk_event_bookings_event_id_events')),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('booking_ref')
     )
     op.create_table('lead_time_rules',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -145,8 +173,11 @@ def downgrade():
     op.drop_table('room_bookings')
     op.drop_table('reviews')
     op.drop_table('lead_time_rules')
+    op.drop_table('event_bookings')
     op.drop_table('discounts')
     op.drop_table('rooms')
+    op.drop_table('events')
     op.drop_table('bookings')
+    op.drop_table('sites')
     op.drop_table('hotels')
     # ### end Alembic commands ###
